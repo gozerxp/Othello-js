@@ -1,5 +1,4 @@
 export default class game_board {
-
     constructor(board_size) {
 
         this.score = {
@@ -7,25 +6,38 @@ export default class game_board {
             p2: 0
         };
 
+        this.turn = 1;
+        this.draw_valid_moves = true;
         this.size = board_size;
         this.board = this.reset();
     }
 
+    get get_board() {
+        return this.board;
+    }
+
+    get p1_score() {
+        return this.score.p1;
+    }
+
+    get p2_score() {
+        return this.score.p2;
+    }
+
     draw(ctx) {
        this.draw_grid(ctx); 
-       this.draw_players(ctx);
+       this.draw_game(ctx);
     }
 
     x_size(ctx) {
-        return parseInt(ctx.canvas.width / this.size);
+        return (ctx.canvas.width / this.size);
     }
 
     y_size(ctx) {
-        return parseInt(ctx.canvas.height / this.size);
+        return (ctx.canvas.height / this.size);
     }
 
     draw_grid(ctx) {
-        
         let x_size = this.x_size(ctx);
         let y_size = this.y_size(ctx);
 
@@ -47,28 +59,40 @@ export default class game_board {
         ctx.stroke();
     }
 
-    draw_players(ctx) {
-
+    draw_game(ctx) {
         let x_size = this.x_size(ctx);
         let y_size = this.y_size(ctx);
-        let radius = x_size / 4;
+        let player_radius = x_size / 4;
+        let valid_move_radius = x_size / 15;
 
         for (let x = 0; x < this.size; x++) {
             for (let y = 0; y < this.size; y++) {
-                if (this.board[x][y] !== 0) {
 
-                    let circle_x = (x * x_size) + (x_size / 2);
-                    let circle_y = (y * y_size) + (y_size / 2);
+                let circle_x = (x * x_size) + (x_size / 2);
+                let circle_y = (y * y_size) + (y_size / 2);
+                let color = this.get_player_color(this.board[x][y]);
 
-                    ctx.beginPath();
-                    ctx.arc(circle_x, circle_y, radius, 0, 2 * Math.PI);
-                    ctx.stroke();
-                    ctx.fillStyle = this.get_player_color(this.board[x][y]);
-                    ctx.fill();
+                if (this.draw_valid_moves && this.check_valid_move(x, y)) {
+                    //valid move marker
+                    this.draw_circle(ctx, circle_x, circle_y, valid_move_radius, color);
+
+                } else if (this.board[x][y] !== 0) {
+                    // player chips
+                    this.draw_circle(ctx, circle_x, circle_y, player_radius, color);
 
                 }
             }
         }
+    }
+
+    draw_circle(ctx, circle_x, circle_y, radius, color) {
+
+        ctx.beginPath();
+        ctx.arc(circle_x, circle_y, radius, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.fillStyle = color;
+        ctx.fill();
+
     }
 
     get_player_color(player) {
@@ -78,28 +102,11 @@ export default class game_board {
             case -1:
                 return "black";
             default:
-                return "red"; //wat
+                return "cyan"; //valid move marker
         }
     }
 
-    draw_flip(ctx) {
-
-    }
-
-    get get_board() {
-        return this.board;
-    }
-
-    get p1_score() {
-        return this.score.p1;
-    }
-
-    get p2_score() {
-        return this.score.p2;
-    }
-
     check_score() {
-
         let p1, p2;
         p1 = p2 = 0;
 
@@ -119,12 +126,9 @@ export default class game_board {
 
         this.score.p1 = p1;
         this.score.p2 = p2;
-
-
     }
  
     reset() {
-
         let rows = [];
         for (let x = 0; x < this.size; x++) {
             let columns = [];
@@ -144,6 +148,8 @@ export default class game_board {
         this.score.p1 = 2;
         this.score.p2 = 2;
 
+        this.turn = 1;
+
         return rows;
     }
 
@@ -159,11 +165,13 @@ export default class game_board {
     }
 
     check_valid_move(x, y) {
-        return false;
+        //if space is empty then return true;
+        return !Boolean(this.board[x][y]);
     }
 
     commit_move(x, y) {
-
+        this.board[x][y] = this.turn;
+        this.turn = -this.turn;
     }
 
 }
