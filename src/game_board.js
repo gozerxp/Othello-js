@@ -1,5 +1,5 @@
 export default class game_board {
-    constructor(board_size) {
+    constructor(board_size, draw_valid_moves = true) {
 
         this.score = {
             p1: 0,
@@ -7,7 +7,7 @@ export default class game_board {
         };
 
         this.turn = 1;
-        this.draw_valid_moves = true;
+        this.draw_valid_moves = draw_valid_moves;
         this.size = board_size;
 
         this.board = this.reset();
@@ -28,6 +28,7 @@ export default class game_board {
     draw(ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.draw_grid(ctx); 
+        
         return this.draw_game(ctx);
     }
 
@@ -256,6 +257,7 @@ export default class game_board {
         
         //switch player turn
         this.turn = -this.turn;
+        this.check_score();
 
 
     }

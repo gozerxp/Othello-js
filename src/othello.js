@@ -42,8 +42,6 @@ const input = (x, y) => {
             console.log("Available moves: " + number_of_valid_moves)
         }
         
-        board.check_score();
-        
         console.log(`Player 1: ${board.p1_score} | Player 2: ${board.p2_score}`);
 
 
