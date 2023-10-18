@@ -9,6 +9,7 @@ export default class game_board {
         this.turn = 1;
         this.draw_valid_moves = true;
         this.size = board_size;
+
         this.board = this.reset();
     }
 
@@ -25,8 +26,9 @@ export default class game_board {
     }
 
     draw(ctx) {
-       this.draw_grid(ctx); 
-       this.draw_game(ctx);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        this.draw_grid(ctx); 
+        return this.draw_game(ctx);
     }
 
     x_size(ctx) {
@@ -64,6 +66,7 @@ export default class game_board {
         let y_size = this.y_size(ctx);
         let player_radius = x_size / 4;
         let valid_move_radius = x_size / 15;
+        let number_of_valid_moves = 0;
 
         for (let x = 0; x < this.size; x++) {
             for (let y = 0; y < this.size; y++) {
@@ -72,17 +75,23 @@ export default class game_board {
                 let circle_y = (y * y_size) + (y_size / 2);
                 let color = this.get_player_color(this.board[x][y]);
 
-                if (this.draw_valid_moves && this.check_valid_move(x, y)) {
-                    //valid move marker
-                    this.draw_circle(ctx, circle_x, circle_y, valid_move_radius, color);
-
-                } else if (this.board[x][y] !== 0) {
+                if (this.board[x][y] !== 0) {
                     // player chips
                     this.draw_circle(ctx, circle_x, circle_y, player_radius, color);
+
+                } else if (this.check_valid_move(x, y)) {
+                    
+                    number_of_valid_moves++;
+
+                    if (this.draw_valid_moves) {
+                        this.draw_circle(ctx, circle_x, circle_y, valid_move_radius, color);
+                    }
 
                 }
             }
         }
+
+        return number_of_valid_moves;
     }
 
     draw_circle(ctx, circle_x, circle_y, radius, color) {
@@ -102,7 +111,7 @@ export default class game_board {
             case -1:
                 return "black";
             default:
-                return "cyan"; //valid move marker
+                return "lime"; //valid move marker
         }
     }
 
@@ -153,25 +162,102 @@ export default class game_board {
         return rows;
     }
 
-    print() {
-        let txt = '';
-        for (let x = 0; x < this.size; x++) {
-            txt = String(x + 1) + ' ';
-            for (let y = 0; y < this.size; y++) {
-                txt += String(this.board[x][y]) + ' ';
-            }
-            console.log(txt);
-        }
-    }
-
     check_valid_move(x, y) {
-        //if space is empty then return true;
-        return !Boolean(this.board[x][y]);
+
+        //cell is not empty, not a valid move.
+        if (this.board[x][y]) {
+            return false;
+        }
+
+        const directions = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
+
+        for ( let i = 0; i < directions.length; i++ ) {
+            
+            let new_cell_x = x + directions[i][0];
+            let new_cell_y = y + directions[i][1];
+
+            if (new_cell_x > (this.size - 1) || new_cell_x < 0) {
+                continue;
+            }
+
+            if (new_cell_y > (this.size - 1) || new_cell_y < 0) {
+                continue;
+            } 
+
+            while (this.board[new_cell_x][new_cell_y] === -this.turn) {
+
+                new_cell_x += directions[i][0];
+                new_cell_y += directions[i][1];
+
+                if (new_cell_x > (this.size - 1) || new_cell_x < 0) {
+                    break;
+                }
+    
+                if (new_cell_y > (this.size - 1) || new_cell_y < 0) {
+                    break;
+                } 
+
+                if (this.board[new_cell_x][new_cell_y] === this.turn) {
+                    return true;
+                }
+            }
+        }
+    
+        return false;
     }
 
     commit_move(x, y) {
+
         this.board[x][y] = this.turn;
+        
+        const directions = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
+
+        for ( let i = 0; i < directions.length; i++ ) {
+            
+            let new_cell_x = x + directions[i][0];
+            let new_cell_y = y + directions[i][1];
+
+            if (new_cell_x > (this.size - 1) || new_cell_x < 0) {
+                continue;
+            }
+
+            if (new_cell_y > (this.size - 1) || new_cell_y < 0) {
+                continue;
+            } 
+
+            while (this.board[new_cell_x][new_cell_y] === -this.turn) {
+
+                new_cell_x += directions[i][0];
+                new_cell_y += directions[i][1];
+
+                if (new_cell_x > (this.size - 1) || new_cell_x < 0) {
+                    break;
+                }
+    
+                if (new_cell_y > (this.size - 1) || new_cell_y < 0) {
+                    break;
+                } 
+
+                if (this.board[new_cell_x][new_cell_y] === this.turn) {
+                    
+                    do { //draw move loop
+
+                        this.board[new_cell_x][new_cell_y] = this.turn;
+                        new_cell_x -= directions[i][0];
+                        new_cell_y -= directions[i][1];
+
+                    } while(this.board[new_cell_x][new_cell_y] !== this.turn)
+
+                    break;
+
+                }
+            }
+        }
+        
+        //switch player turn
         this.turn = -this.turn;
+
+
     }
 
 }
