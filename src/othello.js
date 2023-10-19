@@ -7,7 +7,10 @@ export default class game {
         };
 
         this.turn = 1;
+
         this.draw_valid_moves = draw_valid_moves;
+        this.valid_move_list = [];
+
         this.size = board_size;
 
         this.board = this.reset();
@@ -15,6 +18,10 @@ export default class game {
 
     get get_board() {
         return this.board;
+    }
+
+    get get_valid_move_list() {
+        return this.valid_move_list;
     }
 
     get p1_score() {
@@ -25,11 +32,15 @@ export default class game {
         return this.score.p2;
     }
 
+    get player_turn() {
+        return this.turn;
+    }
+
     draw(ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.draw_grid(ctx); 
         
-        return this.draw_game(ctx);
+        return this.render_game(ctx);
     }
 
     x_size(ctx) {
@@ -62,12 +73,16 @@ export default class game {
         ctx.stroke();
     }
 
-    draw_game(ctx) {
+    render_game(ctx) {
         let x_size = this.x_size(ctx);
         let y_size = this.y_size(ctx);
         let player_radius = x_size / 4;
         let valid_move_radius = x_size / 15;
         let number_of_valid_moves = 0;
+
+        //compile updated valid move list on the fly
+        //this list should be useful for more efficient AI algorithms
+        this.valid_move_list = [];
 
         for (let x = 0; x < this.size; x++) {
             for (let y = 0; y < this.size; y++) {
@@ -82,7 +97,9 @@ export default class game {
 
                 } else if (this.check_valid_move(x, y)) {
                     
+                    //keep count of valid moves and generate list
                     number_of_valid_moves++;
+                    this.valid_move_list.push([x , y]);
 
                     if (this.draw_valid_moves) {
                         this.draw_circle(ctx, circle_x, circle_y, valid_move_radius, color);
@@ -108,9 +125,9 @@ export default class game {
     get_player_color(player) {
         switch(player)  {
             case 1:
-                return "white";
+                return "blue";
             case -1:
-                return "black";
+                return "red";
             default:
                 return "lime"; //valid move marker
         }
@@ -223,26 +240,18 @@ export default class game {
             let new_cell_x = x + directions[i][0];
             let new_cell_y = y + directions[i][1];
 
-            if (new_cell_x > (this.size - 1) || new_cell_x < 0) {
+            if (!this.check_bounds(new_cell_x, new_cell_y, this.size - 1)) {
                 continue;
             }
-
-            if (new_cell_y > (this.size - 1) || new_cell_y < 0) {
-                continue;
-            } 
 
             while (this.board[new_cell_x][new_cell_y] === -this.turn) {
 
                 new_cell_x += directions[i][0];
                 new_cell_y += directions[i][1];
 
-                if (new_cell_x > (this.size - 1) || new_cell_x < 0) {
+                if (!this.check_bounds(new_cell_x, new_cell_y, this.size - 1)) {
                     break;
                 }
-    
-                if (new_cell_y > (this.size - 1) || new_cell_y < 0) {
-                    break;
-                } 
 
                 if (this.board[new_cell_x][new_cell_y] === this.turn) {
                     

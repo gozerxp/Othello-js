@@ -16,6 +16,7 @@ const __touch_device__ = window.ontouchstart !== undefined;
 
 const board = new game(8);
 board.draw(ctx);
+console.log(board.get_valid_move_list);
 
 if (__touch_device__) {
 	canvas.ontouchstart = (e) => {
@@ -36,10 +37,12 @@ const input = (x, y) => {
         let number_of_valid_moves = board.draw(ctx);
 
         if (!number_of_valid_moves) {
-            console.log("GAME OVER!");
+            console.log("***** GAME OVER! *****");
             console.log("No more valid moves!");
         } else {
             console.log("Available moves: " + number_of_valid_moves)
+            let valid_move_list = board.get_valid_move_list;
+            console.log(valid_move_list);
         }
         
         console.log(`Player 1: ${board.p1_score} | Player 2: ${board.p2_score}`);
