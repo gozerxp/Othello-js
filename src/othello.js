@@ -1,14 +1,27 @@
 export default class game {
-    constructor(board_size, draw_valid_moves = true) {
+    constructor(board_size=8, p1_type=1, p2_type=0, draw_valid_moves=true) {
 
         this.score = {
             p1: 0,
             p2: 0
         };
 
+        this.player_type = {
+            /*
+                0 = cpu player
+                1 = human player
+                2 = network player
+            */
+            p1: p1_type,
+            p2: p2_type
+        };
+
         this.turn = 1;
 
         this.draw_valid_moves = draw_valid_moves;
+
+        //this list is generated at rendering.
+        //you can request a custom list by using get_valid_moves method.
         this.valid_move_list = [];
 
         this.size = board_size;
@@ -40,12 +53,44 @@ export default class game {
         return this.turn;
     }
 
+    set_player_type(player, type) {
+         /*
+            0 = cpu player
+            1 = human player
+            2 = network player
+        */
+        if (type < 0 || type > 2) {
+            return;
+        }
+
+        switch(player) {
+            case 1:
+                this.player_type.p1 = type;
+                break;
+            case -1:
+                this.player_type.p2 = type;
+                break;
+            default:
+        }
+    }
+
+    get_player_type(player) {
+        switch(player) {
+            case 1:
+                return this.player_type.p1;
+            case -1:
+                return this.player_type.p2;
+            default:
+                return -1;
+        }
+    }
+
     switch_player_turn() {
         this.turn = -this.turn;
     }
 
     draw(ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         this.draw_grid(ctx); 
         
         return this.render_game(ctx);
@@ -125,7 +170,6 @@ export default class game {
                     if (this.draw_valid_moves) {
                         this.draw_circle(ctx, circle_x, circle_y, valid_move_radius, color);
                     }
-
                 }
             }
         }
@@ -152,7 +196,7 @@ export default class game {
             case -1:
                 return "red";
             default:
-                return "lime"; //valid move marker
+                return "yellow"; //valid move marker
         }
     }
 
