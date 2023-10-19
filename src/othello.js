@@ -1,4 +1,4 @@
-export default class game {
+export class game_board {
     constructor(board_size=8, p1_type=1, p2_type=0, draw_valid_moves=true) {
 
         this.score = {

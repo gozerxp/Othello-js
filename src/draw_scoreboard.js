@@ -1,5 +1,7 @@
+const score_canvas = document.getElementById("score_canvas");
+const score_ctx = score_canvas.getContext("2d");
 
-export const draw_scoreboard = (score_ctx, game) => {
+export const draw_scoreboard = (game) => {
 
     let font_size = 28;
     score_ctx.font = `${font_size}px 'Press Start 2P'`;
@@ -11,12 +13,16 @@ export const draw_scoreboard = (score_ctx, game) => {
     let x = score_ctx.canvas.width / 2 + 50;
 
     let txt_y = y + font_size / 2;
+
     score_ctx.fillText("Othello JS", 25, txt_y);
-    score_ctx.fillText(`${game.p1_score}`, x + radius * 2.5, txt_y);
+
+    let txt_x = x + radius * 2.5
+    score_ctx.fillText(`${game.p1_score}`, txt_x, txt_y);
     game.draw_circle(score_ctx, x, y, radius, game.get_player_color(1));
 
     score_ctx.fillStyle = "white";
-    x += 150;
+    x = score_ctx.canvas.width - score_ctx.canvas.width / 4 + 25;
+    txt_x = x + radius * 2.5;
     score_ctx.fillText(`${game.p2_score}`, x + radius * 2.5, txt_y);
     game.draw_circle(score_ctx, x, y, radius, game.get_player_color(-1));
   

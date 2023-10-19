@@ -2,14 +2,12 @@
 Written by Dan Andersen
 */
 
+import { game_board } from './othello.js';
 import { draw_scoreboard } from './draw_scoreboard.js';
-import game_board from './othello.js';
 
 const _VERSION_ = "0.0.1";
 const game_canvas = document.getElementById("game_canvas");
 const game_ctx = game_canvas.getContext("2d");
-const score_canvas = document.getElementById("score_canvas");
-const score_ctx = score_canvas.getContext("2d");
 
 const canvas_margin = {
     top: 0,
@@ -23,7 +21,7 @@ const __touch_device__ = window.ontouchstart !== undefined;
 
 const game = new game_board();
 game.draw(game_ctx);
-draw_scoreboard(score_ctx, game);
+draw_scoreboard(game);
 
 if (__touch_device__) {
 	game_canvas.ontouchstart = (e) => input(e.pageX, e.pageY);
@@ -41,14 +39,14 @@ const input = (x, y) => {
         game.switch_player_turn();
 
         let number_of_valid_moves = game.draw(game_ctx);
-        draw_scoreboard();
+        draw_scoreboard(game);
 
         if (!number_of_valid_moves) {
             //see if valid moves exists for other player.
             if (game.get_valid_moves(game.get_board, -game.player_turn).length) {
                 game.switch_player_turn();
                 number_of_valid_moves = game.draw(game_ctx);
-                draw_scoreboard(score_ctx, game);
+                draw_scoreboard(game);
                 console.log("** NO VALID MOVE - TURN SKIPPED **");
                 //console.log("Available moves: " + number_of_valid_moves);
             } else {
