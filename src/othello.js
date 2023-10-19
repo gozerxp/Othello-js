@@ -20,6 +20,10 @@ export default class game {
         return this.board;
     }
 
+    set update_board(board) {
+        this.board = board;
+    }
+
     get get_valid_move_list() {
         return this.valid_move_list;
     }
@@ -34,6 +38,10 @@ export default class game {
 
     get player_turn() {
         return this.turn;
+    }
+
+    switch_player_turn() {
+        this.turn = -this.turn;
     }
 
     draw(ctx) {
@@ -79,6 +87,7 @@ export default class game {
         let player_radius = x_size / 4;
         let valid_move_radius = x_size / 15;
         let number_of_valid_moves = 0;
+        let p1 = 0, p2 = 0;
 
         //compile updated valid move list on the fly
         //this list should be useful for more efficient AI algorithms
@@ -92,10 +101,22 @@ export default class game {
                 let color = this.get_player_color(this.board[x][y]);
 
                 if (this.board[x][y] !== 0) {
+
+                    //might as well keep score while we're in the loop
+                    switch(this.board[x][y]) {
+                        case 1:
+                            p1++;
+                            break;
+                        case -1:
+                            p2++;
+                            break;
+                        default:
+                    }
+
                     // player chips
                     this.draw_circle(ctx, circle_x, circle_y, player_radius, color);
 
-                } else if (this.check_valid_move(x, y)) {
+                } else if (this.check_valid_move(this.get_board, x, y, this.player_turn)) {
                     
                     //keep count of valid moves and generate list
                     number_of_valid_moves++;
@@ -108,6 +129,8 @@ export default class game {
                 }
             }
         }
+
+        this.update_score(p1, p2);
 
         return number_of_valid_moves;
     }
@@ -151,8 +174,26 @@ export default class game {
             }
         }
 
+        this.update_score(p1, p2);
+    }
+
+    update_score(p1, p2) {
         this.score.p1 = p1;
         this.score.p2 = p2;
+    }
+
+    get_valid_moves(board, turn) {
+
+        let valid_move_list = [];
+
+        for (let x = 0; x < this.size; x++) {
+            for (let y = 0; y < this.size; y++) {
+                if (this.check_valid_move(board, x, y, turn)) {
+                    valid_move_list.push([x , y]);
+                }
+            }
+        }
+        return valid_move_list;
     }
  
     reset() {
@@ -180,10 +221,10 @@ export default class game {
         return rows;
     }
 
-    check_valid_move(x, y) {
+    check_valid_move(board, x, y, turn) {
 
         //cell is not empty, not a valid move.
-        if (this.board[x][y]) {
+        if (board[x][y]) {
             return false;
         }
 
@@ -194,20 +235,20 @@ export default class game {
             let new_cell_x = x + directions[i][0];
             let new_cell_y = y + directions[i][1];
 
-            if (!this.check_bounds(new_cell_x, new_cell_y, this.size - 1)) {
+            if (!this.check_bounds(new_cell_x, new_cell_y, board.length - 1)) {
                 continue;
             }
 
-            while (this.board[new_cell_x][new_cell_y] === -this.turn) {
+            while (board[new_cell_x][new_cell_y] === -turn) {
 
                 new_cell_x += directions[i][0];
                 new_cell_y += directions[i][1];
 
-                if (!this.check_bounds(new_cell_x, new_cell_y, this.size - 1)) {
+                if (!this.check_bounds(new_cell_x, new_cell_y, board.length - 1)) {
                     break;
                 }
 
-                if (this.board[new_cell_x][new_cell_y] === this.turn) {
+                if (board[new_cell_x][new_cell_y] === turn) {
                     return true;
                 }
             }
@@ -229,9 +270,11 @@ export default class game {
         return true;
     }
 
-    commit_move(x, y) {
+    render_move(game_matrix, x, y, turn) {
 
-        this.board[x][y] = this.turn;
+        let board = game_matrix.slice(0);
+
+        board[x][y] = turn;
         
         const directions = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 
@@ -240,40 +283,36 @@ export default class game {
             let new_cell_x = x + directions[i][0];
             let new_cell_y = y + directions[i][1];
 
-            if (!this.check_bounds(new_cell_x, new_cell_y, this.size - 1)) {
+            if (!this.check_bounds(new_cell_x, new_cell_y, board.length - 1)) {
                 continue;
             }
 
-            while (this.board[new_cell_x][new_cell_y] === -this.turn) {
+            while (board[new_cell_x][new_cell_y] === -turn) {
 
                 new_cell_x += directions[i][0];
                 new_cell_y += directions[i][1];
 
-                if (!this.check_bounds(new_cell_x, new_cell_y, this.size - 1)) {
+                if (!this.check_bounds(new_cell_x, new_cell_y, board.length - 1)) {
                     break;
                 }
 
-                if (this.board[new_cell_x][new_cell_y] === this.turn) {
+                if (board[new_cell_x][new_cell_y] === turn) {
                     
                     do { //draw move loop
 
-                        this.board[new_cell_x][new_cell_y] = this.turn;
+                        board[new_cell_x][new_cell_y] = turn;
                         new_cell_x -= directions[i][0];
                         new_cell_y -= directions[i][1];
 
-                    } while (this.board[new_cell_x][new_cell_y] !== this.turn)
+                    } while (board[new_cell_x][new_cell_y] !== turn)
 
                     break;
 
                 }
             }
         }
-        
-        //switch player turn
-        this.turn = -this.turn;
-        this.check_score();
 
-
+        return board;
     }
 
 }
