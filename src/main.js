@@ -31,32 +31,86 @@ if (__touch_device__) {
 
 const input = (x, y) => {
 
+    //player type is cpu, don't accept input
+    if (game.get_player_type(game.get_player_turn) !== 1) {
+        return;
+    }
+
     x = parseInt((x - canvas_margin.left) / game.x_size(game_ctx));
     y = parseInt((y - canvas_margin.top) / game.y_size(game_ctx));
 
-    if (game.check_valid_move(game.get_board, x, y, game.player_turn)) {
-        game.update_board = game.render_move(game.get_board, x, y, game.player_turn);
+    if (game.check_valid_move(game.get_board, x, y, game.get_player_turn)) {
+        game.update_board = game.render_move(game.get_board, x, y, game.get_player_turn);
         game.switch_player_turn();
 
         let number_of_valid_moves = game.draw(game_ctx);
         draw_scoreboard(game);
 
-        if (!number_of_valid_moves) {
-            //see if valid moves exists for other player.
-            if (game.get_valid_moves(game.get_board, -game.player_turn).length) {
-                game.switch_player_turn();
-                number_of_valid_moves = game.draw(game_ctx);
-                draw_scoreboard(game);
-                console.log("** NO VALID MOVE - TURN SKIPPED **");
-                //console.log("Available moves: " + number_of_valid_moves);
-            } else {
-                console.log("***** GAME OVER! *****");
-                console.log("No more valid moves!");
-            }
-         } //else {
-        //     console.log("Available moves: " + number_of_valid_moves)
-        // }
-
+        if (!check_game_over(number_of_valid_moves, game)) {
+            ai_move(game);
+        }
     }
+};
+
+const check_game_over = (number_of_valid_moves, game) => {
+
+    let game_over = false;
+
+    if (!number_of_valid_moves) {
+        //see if valid moves exists for other player.
+        if (game.get_valid_moves(game.get_board, -game.get_player_turn).length) {
+            game.switch_player_turn();
+            number_of_valid_moves = game.draw(game_ctx);
+            draw_scoreboard(game);
+            console.log("** NO VALID MOVE - TURN SKIPPED **");
+
+            ai_move(game);
+        } else {
+            game_over = true
+            console.log("***** GAME OVER! *****");
+            console.log(declare_winnter(game.p1_score, game.p2_score));
+        }
+    }
+
+    return game_over;
+};
+
+const declare_winnter = (p1, p2) => {
+    
+    let txt = '';
+    if(p1 === p2) {
+        txt = 'Tied game!';
+    } else if (p1 > p2) {
+        txt = 'Player 1 Wins!';
+    } else if (p2 > p1) {
+        txt = 'Player 2 Wins!';
+    }
+
+    return txt;
 }
+
+const ai_move = (game) => {
+
+    if (game.get_player_type(game.get_player_turn) !== 0) {
+        return;
+    }
+
+    let valid_moves = game.get_valid_move_list;
+
+    if (!valid_moves.length) {
+        return;
+    }
+
+    let rand_index = Math.floor(Math.random() * valid_moves.length)
+    let x = valid_moves[rand_index][0];
+    let y = valid_moves[rand_index][1];
+
+    game.update_board = game.render_move(game.get_board, x, y, game.get_player_turn);
+    game.switch_player_turn();
+
+    let number_of_valid_moves = game.draw(game_ctx);
+    draw_scoreboard(game);
+
+    check_game_over(number_of_valid_moves, game);
+};
 

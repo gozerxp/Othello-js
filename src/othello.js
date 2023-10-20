@@ -24,7 +24,7 @@ export class game_board {
         //you can request a custom list by using get_valid_moves method.
         this.valid_move_list = [];
 
-        this.size = board_size;
+        this.size = Math.min(Math.max(board_size, 4), 25);
 
         this.board = this.reset();
     }
@@ -49,7 +49,7 @@ export class game_board {
         return this.score.p2;
     }
 
-    get player_turn() {
+    get get_player_turn() {
         return this.turn;
     }
 
@@ -161,7 +161,7 @@ export class game_board {
                     // player chips
                     this.draw_circle(ctx, circle_x, circle_y, player_radius, color);
 
-                } else if (this.check_valid_move(this.get_board, x, y, this.player_turn)) {
+                } else if (this.check_valid_move(this.get_board, x, y, this.get_player_turn)) {
                     
                     //keep count of valid moves and generate list
                     number_of_valid_moves++;
