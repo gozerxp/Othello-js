@@ -3,11 +3,10 @@ Written by Dan Andersen
 */
 
 import { game_board } from './othello.js';
-import { draw_scoreboard } from './draw_scoreboard.js';
+import { draw_scoreboard, alert, check_game_over, ai_move } from './utility.js';
 
 const _VERSION_ = "0.0.1";
-const game_canvas = document.getElementById("game_canvas");
-const game_ctx = game_canvas.getContext("2d");
+export const game_ctx = document.getElementById("game_canvas").getContext("2d");
 
 const canvas_margin = {
     top: 0,
@@ -19,6 +18,7 @@ const __touch_device__ = window.ontouchstart !== undefined;
 
 //*******************************************************//
 
+let game_over = false;
 const game = new game_board();
 game.draw(game_ctx);
 draw_scoreboard(game);
@@ -31,7 +31,24 @@ if (__touch_device__) {
 
 const input = (x, y) => {
 
-    //player type is cpu, don't accept input
+    if (alert.active) {
+        
+        if (game_over) {
+            game.update_board = game.reset();
+            game.draw(game_ctx);
+            draw_scoreboard(game);
+            game_over = false;
+        } else {
+            game.draw(game_ctx);
+            draw_scoreboard(game);
+        }
+
+        alert.active = false;
+
+        return;
+    }
+
+    //player type is cpu, don't accept input0
     if (game.get_player_type(game.get_player_turn) !== 1) {
         return;
     }
@@ -43,74 +60,17 @@ const input = (x, y) => {
         game.update_board = game.render_move(game.get_board, x, y, game.get_player_turn);
         game.switch_player_turn();
 
-        let number_of_valid_moves = game.draw(game_ctx);
+        game.draw(game_ctx);
         draw_scoreboard(game);
 
-        if (!check_game_over(number_of_valid_moves, game)) {
-            ai_move(game);
+        game_over = check_game_over(game.get_valid_move_list.length, game);
+
+        if (!game_over) {
+            game_over = ai_move(game);
         }
     }
 };
 
-const check_game_over = (number_of_valid_moves, game) => {
 
-    let game_over = false;
 
-    if (!number_of_valid_moves) {
-        //see if valid moves exists for other player.
-        if (game.get_valid_moves(game.get_board, -game.get_player_turn).length) {
-            game.switch_player_turn();
-            number_of_valid_moves = game.draw(game_ctx);
-            draw_scoreboard(game);
-            console.log("** NO VALID MOVE - TURN SKIPPED **");
-
-            ai_move(game);
-        } else {
-            game_over = true
-            console.log("***** GAME OVER! *****");
-            console.log(declare_winnter(game.p1_score, game.p2_score));
-        }
-    }
-
-    return game_over;
-};
-
-const declare_winnter = (p1, p2) => {
-    
-    let txt = '';
-    if(p1 === p2) {
-        txt = 'Tied game!';
-    } else if (p1 > p2) {
-        txt = 'Player 1 Wins!';
-    } else if (p2 > p1) {
-        txt = 'Player 2 Wins!';
-    }
-
-    return txt;
-}
-
-const ai_move = (game) => {
-
-    if (game.get_player_type(game.get_player_turn) !== 0) {
-        return;
-    }
-
-    let valid_moves = game.get_valid_move_list;
-
-    if (!valid_moves.length) {
-        return;
-    }
-
-    let rand_index = Math.floor(Math.random() * valid_moves.length)
-    let x = valid_moves[rand_index][0];
-    let y = valid_moves[rand_index][1];
-
-    game.update_board = game.render_move(game.get_board, x, y, game.get_player_turn);
-    game.switch_player_turn();
-
-    let number_of_valid_moves = game.draw(game_ctx);
-    draw_scoreboard(game);
-
-    check_game_over(number_of_valid_moves, game);
-};
 

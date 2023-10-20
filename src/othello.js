@@ -92,8 +92,7 @@ export class game_board {
     draw(ctx) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         this.draw_grid(ctx); 
-        
-        return this.render_game(ctx);
+        this.render_game(ctx);
     }
 
     x_size(ctx) {
@@ -131,7 +130,6 @@ export class game_board {
         let y_size = this.y_size(ctx);
         let player_radius = x_size / 4;
         let valid_move_radius = x_size / 15;
-        let number_of_valid_moves = 0;
         let p1 = 0, p2 = 0;
 
         //compile updated valid move list on the fly
@@ -164,10 +162,9 @@ export class game_board {
                 } else if (this.check_valid_move(this.get_board, x, y, this.get_player_turn)) {
                     
                     //keep count of valid moves and generate list
-                    number_of_valid_moves++;
                     this.valid_move_list.push([x , y]);
 
-                    if (this.draw_valid_moves) {
+                    if (this.draw_valid_moves && this.get_player_type(this.get_player_turn) === 1) {
                         this.draw_circle(ctx, circle_x, circle_y, valid_move_radius, color);
                     }
                 }
@@ -176,7 +173,6 @@ export class game_board {
 
         this.update_score(p1, p2);
 
-        return number_of_valid_moves;
     }
 
     draw_circle(ctx, circle_x, circle_y, radius, color) {
