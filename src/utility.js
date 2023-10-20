@@ -48,6 +48,7 @@ export const alert = {
         game_ctx.beginPath();
         game_ctx.roundRect(...position, ...size, 25);
         game_ctx.fill();
+        game_ctx.globalAlpha = 1.0;
 
         game_ctx.font = `${font_size}px 'Press Start 2P'`;
         game_ctx.fillStyle = "white";
