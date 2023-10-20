@@ -18,7 +18,6 @@ const __touch_device__ = window.ontouchstart !== undefined;
 
 //*******************************************************//
 
-let game_over = false;
 const game = new game_board();
 game.draw(game_ctx);
 draw_scoreboard(game);
@@ -31,20 +30,18 @@ if (__touch_device__) {
 
 const input = (x, y) => {
 
-    if (alert.active) {
-        
-        if (game_over) {
-            game.update_board = game.reset();
-            game.draw(game_ctx);
-            draw_scoreboard(game);
-            game_over = false;
-        } else {
-            game.draw(game_ctx);
-            draw_scoreboard(game);
-        }
-
+    if (game.game_over) {
+        game.update_board = game.reset();
+        game.draw(game_ctx);
+        draw_scoreboard(game);
         alert.active = false;
+        return;
+    } 
 
+    if (alert.active) {
+        game.draw(game_ctx);
+        draw_scoreboard(game);
+        alert.active = false;
         return;
     }
 
@@ -59,14 +56,13 @@ const input = (x, y) => {
     if (game.check_valid_move(game.get_board, x, y, game.get_player_turn)) {
         game.update_board = game.render_move(game.get_board, x, y, game.get_player_turn);
         game.switch_player_turn();
-
         game.draw(game_ctx);
         draw_scoreboard(game);
 
-        game_over = check_game_over(game.get_valid_move_list.length, game);
+        game.game_over = check_game_over(game);
 
-        if (!game_over) {
-            game_over = ai_move(game);
+        if (!game.game_over) {
+            game.game_over = ai_move(game);
         }
     }
 };

@@ -2,16 +2,16 @@ import { game_ctx } from './main.js';
 
 const score_ctx = document.getElementById("score_canvas").getContext("2d");
 
-const font_size = 28;
-const margin = 25;
-
 export const draw_scoreboard = (game) => {
+
+    const font_size = 28;
+    const margin = 25;
+    const radius = 20;
 
     score_ctx.font = `${font_size}px 'Press Start 2P'`;
     score_ctx.fillStyle = "white";
     score_ctx.clearRect(0, 0, score_ctx.canvas.width, score_ctx.canvas.height);
 
-    let radius = 20;
     let y = score_ctx.canvas.height / 2;
     let x = score_ctx.canvas.width / 2 + (margin * 2);
 
@@ -34,6 +34,8 @@ export const draw_scoreboard = (game) => {
 export const alert = {
     active: false,
     alert: function(message) {
+
+        const font_size = 22;
 
         this.active = true;
 
@@ -68,9 +70,9 @@ export const declare_winner = (p1, p2) => {
     }
 };
 
-export const check_game_over = (number_of_valid_moves, game) => {
+export const check_game_over = (game) => {
 
-    if (!number_of_valid_moves) {
+    if (!game.get_valid_move_list.length) {
         //see if valid moves exists for other player.
         if (game.get_valid_moves(game.get_board, -game.get_player_turn).length) {
 
@@ -109,17 +111,19 @@ export const ai_move = (game) => {
     let rand_index = Math.floor(Math.random() * valid_moves.length)
     let x = valid_moves[rand_index][0];
     let y = valid_moves[rand_index][1];
-    let delay = 300;
+    let delay = 250;
+
+    game.update_board = game.render_move(game.get_board, x, y, game.get_player_turn);
 
     setTimeout(() => {
-        game.update_board = game.render_move(game.get_board, x, y, game.get_player_turn);
+        
         game.switch_player_turn();
-    
         game.draw(game_ctx);
         draw_scoreboard(game);
-
-        return check_game_over(game.get_valid_move_list.length, game);
+        return check_game_over(game);
     
     }, delay);
+
+    
 
 };

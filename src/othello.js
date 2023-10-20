@@ -18,6 +18,8 @@ export class game_board {
 
         this.turn = 1;
 
+        this.game_over = false;
+
         this.draw_valid_moves = draw_valid_moves;
 
         //this list is generated at rendering.
@@ -258,7 +260,22 @@ export class game_board {
 
         this.turn = 1;
 
+        this.game_over = false;
+
         return rows;
+    }
+
+    check_bounds(x, y, size) {
+
+        if (x > size || x < 0) {
+            return false;
+        }
+
+        if (y > size || y < 0) {
+            return false;
+        } 
+
+        return true;
     }
 
     check_valid_move(board, x, y, turn) {
@@ -295,19 +312,6 @@ export class game_board {
         }
     
         return false;
-    }
-
-    check_bounds(x, y, size) {
-
-        if (x > size || x < 0) {
-            return false;
-        }
-
-        if (y > size || y < 0) {
-            return false;
-        } 
-
-        return true;
     }
 
     render_move(game_matrix, x, y, turn) {
