@@ -1,6 +1,9 @@
 import { game_ctx } from './main.js';
 
 const score_ctx = document.getElementById("score_canvas").getContext("2d");
+if (score_ctx.canvas.width > window.innerWidth) {
+    score_ctx.canvas.width = window.innerWidth;
+}
 
 export const draw_scoreboard = (game) => {
 

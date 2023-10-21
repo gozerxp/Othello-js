@@ -10,6 +10,11 @@ import { ai_loop } from './ai.js';
 const _VERSION_ = "1.0.0 BETA";
 export const game_ctx = document.getElementById("game_canvas").getContext("2d");
 
+if (game_ctx.canvas.width > window.innerWidth) {
+    game_ctx.canvas.width = window.innerWidth;
+    game_ctx.canvas.height = (6/8) * game_ctx.canvas.width;
+}
+
 const canvas_margin = {
     top: 75,
     left: 0
