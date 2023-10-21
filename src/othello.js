@@ -87,6 +87,17 @@ export class game_board {
         }
     }
 
+    get_player(player) {
+        switch(player) {
+            case 1:
+                return 1;
+            case -1:
+                return 2;
+            default:
+                return -1;
+        }
+    }
+
     switch_player_turn() {
         this.turn = -this.turn;
     }
@@ -239,6 +250,7 @@ export class game_board {
     }
  
     reset() {
+
         let rows = [];
         for (let x = 0; x < this.size; x++) {
             let columns = [];

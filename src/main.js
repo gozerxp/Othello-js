@@ -3,13 +3,13 @@ Written by Dan Andersen
 */
 
 import { game_board } from './othello.js';
-import { draw_scoreboard, alert, check_game_over, ai_move } from './utility.js';
+import { draw_scoreboard, alert, check_game_over, ai_loop } from './utility.js';
 
 const _VERSION_ = "0.0.1";
 export const game_ctx = document.getElementById("game_canvas").getContext("2d");
 
 const canvas_margin = {
-    top: 0,
+    top: 75,
     left: 0
 };
 
@@ -18,9 +18,10 @@ const __touch_device__ = window.ontouchstart !== undefined;
 
 //*******************************************************//
 
-const game = new game_board();
+const game = new game_board(8, 0, 0);
 game.draw(game_ctx);
 draw_scoreboard(game);
+ai_loop(game);
 
 if (__touch_device__) {
 	game_canvas.ontouchstart = (e) => input(e.pageX, e.pageY);
@@ -35,6 +36,7 @@ const input = (x, y) => {
         game.draw(game_ctx);
         draw_scoreboard(game);
         alert.active = false;
+        ai_loop(game);
         return;
     } 
 
@@ -42,11 +44,7 @@ const input = (x, y) => {
         game.draw(game_ctx);
         draw_scoreboard(game);
         alert.active = false;
-        return;
-    }
-
-    //player type is cpu, don't accept input0
-    if (game.get_player_type(game.get_player_turn) !== 1) {
+        ai_loop(game);
         return;
     }
 
@@ -62,10 +60,13 @@ const input = (x, y) => {
         game.game_over = check_game_over(game);
 
         if (!game.game_over) {
-            game.game_over = ai_move(game);
+            ai_loop(game);
         }
     }
+    
 };
+
+
 
 
 

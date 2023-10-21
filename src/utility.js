@@ -4,9 +4,9 @@ const score_ctx = document.getElementById("score_canvas").getContext("2d");
 
 export const draw_scoreboard = (game) => {
 
-    const font_size = 28;
-    const margin = 25;
-    const radius = 20;
+    const font_size = 22;
+    const margin = 30;
+    const radius = 18;
 
     score_ctx.font = `${font_size}px 'Press Start 2P'`;
     score_ctx.fillStyle = "white";
@@ -17,7 +17,7 @@ export const draw_scoreboard = (game) => {
 
     let txt_y = y + font_size / 2;
 
-    score_ctx.fillText("Othello JS", margin, txt_y);
+    score_ctx.fillText("Othello.JS", margin, txt_y);
 
     let txt_x = x + radius * 2.25;
     score_ctx.fillText(`${game.p1_score}`, txt_x, txt_y);
@@ -33,13 +33,25 @@ export const draw_scoreboard = (game) => {
 
 export const alert = {
     active: false,
-    alert: function(message) {
+    pop: function(message, font_size=18) {
 
-        const font_size = 22;
+        const margin = font_size * 1.75;
 
         this.active = true;
 
-        const size = [game_ctx.canvas.width / 1.5, 250];
+        game_ctx.font = `${font_size}px 'Press Start 2P'`;
+
+        let max_width = 0;
+        message.forEach((e) => {
+            if (game_ctx.measureText(e).width > max_width) {
+                max_width = game_ctx.measureText(e).width;
+            }
+        });
+        
+        let w = max_width + margin * 2.5;
+        let h = font_size * message.length + margin * message.length;
+
+        const size = [w, h];
         const position = [game_ctx.canvas.width / 2 - (size[0] / 2), 
                             game_ctx.canvas.height / 2 - (size[1] / 2)];
 
@@ -50,13 +62,15 @@ export const alert = {
         game_ctx.fill();
         game_ctx.globalAlpha = 1.0;
 
-        game_ctx.font = `${font_size}px 'Press Start 2P'`;
         game_ctx.fillStyle = "white";
 
-        position[0] += (size[0] / 2) - (game_ctx.measureText(message).width / 2);
-        position[1] += (size[1] / 2);
+        let start_y = game_ctx.canvas.height / 2 + font_size / 2 - (margin * (message.length - 1) / 2);
 
-        game_ctx.fillText(message, ...position);
+        for(let i = 0; i < message.length; i++ ) {
+            position[0] = (game_ctx.canvas.width / 2) - (game_ctx.measureText(message[i]).width / 2);
+            position[1] = start_y + (margin * i);
+            game_ctx.fillText(message[i], ...position);
+        }
 
     }
 };
@@ -73,58 +87,77 @@ export const declare_winner = (p1, p2) => {
 
 export const check_game_over = (game) => {
 
-    if (!game.get_valid_move_list.length) {
-        //see if valid moves exists for other player.
-        if (game.get_valid_moves(game.get_board, -game.get_player_turn).length) {
-
-            game.switch_player_turn();
-
-            game.draw(game_ctx);
-            draw_scoreboard(game);
-
-            alert.alert(`TURN SKIPPED`);
-
-            return ai_move(game);
-
-        } else {
-
-            console.log("***** GAME OVER! *****");
-            alert.alert(declare_winner(game.p1_score, game.p2_score));
-            return true;
-        }
+    if (game.get_valid_move_list.length) {
+        return false;
     }
+        //see if valid moves exists for other player.
+    if (game.get_valid_moves(game.get_board, -game.get_player_turn).length) {
 
-    return false;
-};
+        game.switch_player_turn();
 
-export const ai_move = (game) => {
+        game.draw(game_ctx);
+        draw_scoreboard(game);
+
+        alert.pop(["No valid moves!", `Player ${game.get_player(-game.get_player_turn)} turn skipped.`]);
+
+        return false;
+
+    } else {
+
+        console.log("***** GAME OVER! *****");
+        alert.pop(["GAME OVER!", declare_winner(game.p1_score, game.p2_score)], 28);
+        return true;
+    
+    }
+}
+
+
+export const ai_loop = (game) => {  
+    
+    // 0 === cpu. only loop while turn belongs to the cpu. 
+    // multiple turns could occur if there were no valid moves for the player.
+
+    const delay = 200;
+
+    let interval = setInterval(() => {  
+        game.game_over = ai_move(game);
+
+        if (game.get_player_type(game.get_player_turn) !== 0 || alert.active || game.game_over ) {
+            clearInterval(interval);
+        }
+    }, delay);
+
+    //}
+
+}
+
+const ai_move = (game) => {
 
     if (game.get_player_type(game.get_player_turn) !== 0) {
+        
         return false;
     }
 
     let valid_moves = game.get_valid_move_list;
 
     if (!valid_moves.length) {
-        return false;
+
+        game.switch_player_turn();
+        game.draw(game_ctx);
+        draw_scoreboard(game);
+        return check_game_over(game);
+
     }
 
     let rand_index = Math.floor(Math.random() * valid_moves.length)
     let x = valid_moves[rand_index][0];
     let y = valid_moves[rand_index][1];
-    let delay = 250;
 
     game.update_board = game.render_move(game.get_board, x, y, game.get_player_turn);
+    game.switch_player_turn();  
+    game.draw(game_ctx);
+    draw_scoreboard(game);
 
-    setTimeout(() => {
-        
-        game.switch_player_turn();
-        game.draw(game_ctx);
-        draw_scoreboard(game);
-        return check_game_over(game);
+    return check_game_over(game);
     
-    }, delay);
-
-    
-
 };
