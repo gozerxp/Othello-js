@@ -3,6 +3,7 @@ Written by Dan Andersen
 */
 
 import { game_board } from './othello.js';
+import { check_valid_move, render_move } from "./matrix.js";
 import { draw_scoreboard, alert, check_game_over, ai_loop } from './utility.js';
 
 const _VERSION_ = "0.0.1";
@@ -18,7 +19,7 @@ const __touch_device__ = window.ontouchstart !== undefined;
 
 //*******************************************************//
 
-const game = new game_board(8, 0, 0);
+const game = new game_board();
 game.draw(game_ctx);
 draw_scoreboard(game);
 ai_loop(game);
@@ -51,8 +52,8 @@ const input = (x, y) => {
     x = parseInt((x - canvas_margin.left) / game.x_size(game_ctx));
     y = parseInt((y - canvas_margin.top) / game.y_size(game_ctx));
 
-    if (game.check_valid_move(game.get_board, x, y, game.get_player_turn)) {
-        game.update_board = game.render_move(game.get_board, x, y, game.get_player_turn);
+    if (check_valid_move(game.get_board, x, y, game.get_player_turn)) {
+        game.update_board = render_move(game.get_board, x, y, game.get_player_turn);
         game.switch_player_turn();
         game.draw(game_ctx);
         draw_scoreboard(game);

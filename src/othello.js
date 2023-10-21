@@ -1,3 +1,5 @@
+import { check_valid_move } from "./matrix.js";
+
 export class game_board {
     constructor(board_size=8, p1_type=1, p2_type=0, draw_valid_moves=true) {
 
@@ -32,7 +34,7 @@ export class game_board {
     }
 
     get get_board() {
-        return this.board;
+        return JSON.parse(JSON.stringify(this.board));
     }
 
     set update_board(board) {
@@ -93,6 +95,17 @@ export class game_board {
                 return 1;
             case -1:
                 return 2;
+            default:
+                return -1;
+        }
+    }
+
+    get_score(player) {
+        switch(player) {
+            case 1:
+                return this.p1_score;
+            case -1:
+                return this.p2_score;
             default:
                 return -1;
         }
@@ -172,7 +185,7 @@ export class game_board {
                     // player chips
                     this.draw_circle(ctx, circle_x, circle_y, player_radius, color);
 
-                } else if (this.check_valid_move(this.get_board, x, y, this.get_player_turn)) {
+                } else if (check_valid_move(this.get_board, x, y, this.get_player_turn)) {
                     
                     //keep count of valid moves and generate list
                     this.valid_move_list.push([x , y]);
@@ -241,7 +254,7 @@ export class game_board {
 
         for (let x = 0; x < this.size; x++) {
             for (let y = 0; y < this.size; y++) {
-                if (this.check_valid_move(board, x, y, turn)) {
+                if (check_valid_move(board, x, y, turn)) {
                     valid_move_list.push([x , y]);
                 }
             }
@@ -276,99 +289,4 @@ export class game_board {
 
         return rows;
     }
-
-    check_bounds(x, y, size) {
-
-        if (x > size || x < 0) {
-            return false;
-        }
-
-        if (y > size || y < 0) {
-            return false;
-        } 
-
-        return true;
-    }
-
-    check_valid_move(board, x, y, turn) {
-
-        //cell is not empty, not a valid move.
-        if (board[x][y]) {
-            return false;
-        }
-
-        const directions = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
-
-        for (let i = 0; i < directions.length; i++) {
-            
-            let new_cell_x = x + directions[i][0];
-            let new_cell_y = y + directions[i][1];
-
-            if (!this.check_bounds(new_cell_x, new_cell_y, board.length - 1)) {
-                continue;
-            }
-
-            while (board[new_cell_x][new_cell_y] === -turn) {
-
-                new_cell_x += directions[i][0];
-                new_cell_y += directions[i][1];
-
-                if (!this.check_bounds(new_cell_x, new_cell_y, board.length - 1)) {
-                    break;
-                }
-
-                if (board[new_cell_x][new_cell_y] === turn) {
-                    return true;
-                }
-            }
-        }
-    
-        return false;
-    }
-
-    render_move(game_matrix, x, y, turn) {
-
-        let board = game_matrix.slice(0);
-
-        board[x][y] = turn;
-        
-        const directions = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
-
-        for (let i = 0; i < directions.length; i++) {
-            
-            let new_cell_x = x + directions[i][0];
-            let new_cell_y = y + directions[i][1];
-
-            if (!this.check_bounds(new_cell_x, new_cell_y, board.length - 1)) {
-                continue;
-            }
-
-            while (board[new_cell_x][new_cell_y] === -turn) {
-
-                new_cell_x += directions[i][0];
-                new_cell_y += directions[i][1];
-
-                if (!this.check_bounds(new_cell_x, new_cell_y, board.length - 1)) {
-                    break;
-                }
-
-                if (board[new_cell_x][new_cell_y] === turn) {
-                    
-                    do { //draw move loop
-
-                        board[new_cell_x][new_cell_y] = turn;
-                        new_cell_x -= directions[i][0];
-                        new_cell_y -= directions[i][1];
-
-                    } while (board[new_cell_x][new_cell_y] !== turn)
-
-                    break;
-
-                }
-            }
-        }
-
-        return board;
-    }
-
 }
