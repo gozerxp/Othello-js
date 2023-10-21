@@ -60,6 +60,8 @@ const ai_evaluate = (board, turn, valid_moves) => {
     const temp_board = new game_board();
     temp_board.turn = turn;
 
+    let best_moves = [];
+
     for (let i = 0; i < valid_moves.length; i++) {
 
         let x = valid_moves[i][0];
@@ -75,11 +77,23 @@ const ai_evaluate = (board, turn, valid_moves) => {
         temp_board.check_score();
         let post_score = temp_board.get_score(turn);
 
-        if (post_score - pre_score > best_move.score) {
+        let score = post_score - pre_score;
+
+        if (score > best_move.score) {
             best_move.index = i;
-            best_move.score = post_score - pre_score;
+            best_move.score = score;
+
+            //create list of best moves
+            best_moves = [];
+            best_moves.push([x, y]);
+        } else if (score === best_move.score) {
+            
+            best_moves.push([x, y]);
         }
+
     }
 
-    return best_move.index;
+    let rand_index = Math.floor(Math.random() * best_moves.length)
+
+    return rand_index;
 };
