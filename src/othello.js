@@ -34,7 +34,7 @@ export class game_board {
     }
 
     get get_board() {
-        return JSON.parse(JSON.stringify(this.board));
+        return this.board;
     }
 
     set update_board(board) {

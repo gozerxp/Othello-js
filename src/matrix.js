@@ -49,7 +49,8 @@ export function check_valid_move (board, x, y, turn) {
 
 export function render_move (matrix, x, y, turn) {
 
-    const  new_board = matrix;
+    //create deep copy so changes don't affect existing board.
+    const new_board =  JSON.parse(JSON.stringify(matrix));
     new_board[x][y] = turn;
 
     const directions = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];

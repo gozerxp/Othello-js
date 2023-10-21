@@ -4,9 +4,10 @@ Written by Dan Andersen
 
 import { game_board } from './othello.js';
 import { check_valid_move, render_move } from "./matrix.js";
-import { draw_scoreboard, alert, check_game_over, ai_loop } from './utility.js';
+import { draw_scoreboard, alert, check_game_over } from './utility.js';
+import { ai_loop } from './ai.js';
 
-const _VERSION_ = "0.0.1";
+const _VERSION_ = "1.0.0 BETA";
 export const game_ctx = document.getElementById("game_canvas").getContext("2d");
 
 const canvas_margin = {
