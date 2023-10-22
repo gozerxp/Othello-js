@@ -1,3 +1,4 @@
+import { alert } from './alert.js';
 import { game_ctx } from './main.js';
 
 const score_ctx = document.getElementById("score_canvas").getContext("2d");
@@ -36,58 +37,7 @@ export const draw_scoreboard = (game) => {
   
 };
 
-export const alert = {
-    active: false,
-    pop: function(message, font_size=18) {
-
-        const margin = font_size * 1.75;
-
-        this.active = true;
-
-        game_ctx.font = `${font_size}px 'Press Start 2P'`;
-
-        let max = {
-            width: 0,
-            message: ''
-        };
-
-        message.forEach((e) => {
-            if (game_ctx.measureText(e).width > max.width) {
-                max.width = game_ctx.measureText(e).width;
-                max.message = e;
-            }
-        });
-        
-        let w = Math.min(max.width + margin * 2.5, game_ctx.canvas.width * 0.9);
-        let h = font_size * message.length + margin * 2;
-
-        const size = [w, h];
-        const position = [game_ctx.canvas.width / 2 - (size[0] / 2), 
-                            game_ctx.canvas.height / 2 - (size[1] / 2)];
-
-        game_ctx.globalAlpha = 0.9;
-        game_ctx.fillStyle = "rgb(50, 50, 50)";
-        game_ctx.beginPath();
-        game_ctx.roundRect(...position, ...size, 20);
-        game_ctx.fill();
-        game_ctx.globalAlpha = 1.0;
-
-        game_ctx.fillStyle = "white";
-
-        font_size = reduce_font(game_ctx, max.message, font_size, w * 0.85);
-
-        let start_y = game_ctx.canvas.height / 2 + font_size / 2 - (margin * (message.length - 1) / 2);
-
-        for(let i = 0; i < message.length; i++ ) {
-            position[0] = (game_ctx.canvas.width / 2) - (game_ctx.measureText(message[i]).width / 2);
-            position[1] = start_y + (margin * i);
-            game_ctx.fillText(message[i], ...position);
-        }
-
-    }
-};
-
-const reduce_font = (ctx, text, font_size, max_size) => {
+export const reduce_font = (ctx, text, font_size, max_size) => {
 
     ctx.font = `${font_size}px 'Press Start 2P'`;
     while(ctx.measureText(text).width > max_size) {
@@ -126,20 +76,18 @@ export const check_game_over = (game) => {
     if (game.get_valid_moves(game.get_board, -game.get_player_turn).length) {
 
         game.switch_player_turn();
-
         game.draw(game_ctx);
         draw_scoreboard(game);
 
-        alert.pop(["No valid moves!", `Player ${game.get_player(-game.get_player_turn)} turn skipped.`]);
+        alert.pop(game_ctx, ["No valid moves!", `Player ${game.get_player(-game.get_player_turn)} turn skipped.`]);
 
         return false;
 
     } else {
 
-        alert.pop(["GAME OVER!", declare_winner(game.p1_score, game.p2_score)], 24);
+        alert.pop(game_ctx, ["GAME OVER!", declare_winner(game.p1_score, game.p2_score)], 24);
         return true;
-    
     }
-}
+};
 
 

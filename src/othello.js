@@ -191,6 +191,7 @@ export class game_board {
                     //keep count of valid moves and generate list
                     this.valid_move_list.push([x , y]);
 
+                    //draw valid move markers if player = human
                     if (this.draw_valid_moves && this.get_player_type(this.get_player_turn) === 1) {
                         draw_circle(ctx, circle_x, circle_y, valid_move_radius, color);
                     }

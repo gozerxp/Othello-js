@@ -1,7 +1,8 @@
 import { game_ctx } from './main.js';
 import { game_board } from './othello.js';
 import { render_move } from "./matrix.js";
-import { alert, draw_scoreboard, check_game_over } from './utility.js';
+import { draw_scoreboard, check_game_over } from './utility.js';
+import { alert } from './alert.js';
 
 export const ai = {
 
