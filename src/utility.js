@@ -29,7 +29,7 @@ export const draw_scoreboard = (game) => {
     game.draw_circle(score_ctx, x, y, radius, game.get_player_color(1));
 
     score_ctx.fillStyle = "white";
-    x = txt_x + score_ctx.measureText("000").width + radius;
+    x = txt_x + score_ctx.measureText("0000").width + radius;
     txt_x = x + margin;
     score_ctx.fillText(`${game.p2_score}`, txt_x, txt_y);
     game.draw_circle(score_ctx, x, y, radius, game.get_player_color(-1));
