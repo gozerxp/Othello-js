@@ -7,8 +7,7 @@ import { alert } from './alert.js';
 export const ai = {
 
     delay: 250,
-
-    loop: function(game) {
+    loop: function (game) {
         // 0 === cpu. only loop while turn belongs to the cpu. 
         // multiple turns could occur if there were no valid moves for the player.
         let interval = setInterval(() => {
@@ -24,19 +23,16 @@ export const ai = {
     move: function(game) {
 
         if (game.get_player_type(game.get_player_turn) !== 0) {
-    
             return false;
         }
     
         let valid_moves = game.get_valid_move_list;
     
         if (!valid_moves.length) {
-    
             game.switch_player_turn();
             game.draw(game_ctx);
             draw_scoreboard(game);
             return check_game_over(game);
-    
         }
     
         //index = Math.floor(Math.random() * valid_moves.length)
@@ -50,7 +46,6 @@ export const ai = {
         draw_scoreboard(game);
     
         return check_game_over(game);
-    
     },
 
     evaluate: function (board, turn, valid_moves) {
