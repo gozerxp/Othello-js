@@ -10,15 +10,28 @@ import { ai_loop } from './ai.js';
 const _VERSION_ = "1.0.0 BETA";
 export const game_ctx = document.getElementById("game_canvas").getContext("2d");
 
-if (game_ctx.canvas.width > window.innerWidth) {
-    game_ctx.canvas.width = window.innerWidth;
-    game_ctx.canvas.height = (6/8) * game_ctx.canvas.width;
-}
-
 const canvas_margin = {
-    top: 75,
+    top: 60,
     left: 0
 };
+
+let aspect_ratio = (3/4);
+
+if (window.innerHeight > window.innerWidth) {
+    aspect_ratio = (4/3);
+}
+
+game_ctx.canvas.height = aspect_ratio * game_ctx.canvas.width - canvas_margin.top;
+
+if (game_ctx.canvas.width > window.innerWidth) {
+    game_ctx.canvas.width = window.innerWidth;
+1}
+
+if(game_ctx.canvas.height + canvas_margin.top > window.innerHeight) {
+    game_ctx.canvas.height = window.innerHeight - canvas_margin.top;
+}
+
+
 
 //check for touchscreen
 const __touch_device__ = window.ontouchstart !== undefined;

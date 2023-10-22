@@ -1,8 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 body {
+   margin: 0 auto;
+   font-family: 'Press Start 2P', cursive;
+   user-select: none;
    background-color: black;
-}
+   overflow: hidden;
+ }
 
 canvas {
    display: block;
@@ -11,7 +15,7 @@ canvas {
 
 #game_canvas { 
    background-color: rgb(0, 200, 0);
-   top: 75px;
+   top: 60px;
    left: 0px; 
  }
 

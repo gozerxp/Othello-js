@@ -7,6 +7,8 @@ export const ai_loop = (game, delay=250) => {
     // 0 === cpu. only loop while turn belongs to the cpu. 
     // multiple turns could occur if there were no valid moves for the player.
 
+    //delay = 1;
+
     let interval = setInterval(() => {
 
         game.game_over = ai_move(game);
@@ -57,7 +59,7 @@ const ai_evaluate = (board, turn, valid_moves) => {
         score: 0
     };
 
-    const temp_board = new game_board();
+    const temp_board = new game_board(board.length);
     temp_board.turn = turn;
 
     let best_moves = [];
@@ -93,6 +95,7 @@ const ai_evaluate = (board, turn, valid_moves) => {
 
     }
 
+    //if multiple "best moves" are found, pick a random one...for now
     let rand_index = Math.floor(Math.random() * best_moves.length)
 
     return rand_index;

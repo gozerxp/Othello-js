@@ -7,29 +7,31 @@ if (score_ctx.canvas.width > window.innerWidth) {
 
 export const draw_scoreboard = (game) => {
 
-    const font_size = 22;
-    const margin = 30;
-    const radius = 18;
+    let font_size = 22;
+    const radius = 13;
+    const margin = radius * 2;
 
-    score_ctx.font = `${font_size}px 'Press Start 2P'`;
     score_ctx.fillStyle = "white";
     score_ctx.clearRect(0, 0, score_ctx.canvas.width, score_ctx.canvas.height);
 
     let y = score_ctx.canvas.height / 2;
-    let x = score_ctx.canvas.width / 2 + (margin * 2);
+    let x = score_ctx.canvas.width / 2 + margin;
 
+    let title = "Othello.js";
+    font_size = reduce_font(score_ctx, title, font_size, score_ctx.canvas.width / 2 - margin);
     let txt_y = y + font_size / 2;
+    let txt_x = score_ctx.canvas.width / 4 - (score_ctx.measureText(title).width / 2);
 
-    score_ctx.fillText("Othello.JS", margin, txt_y);
+    score_ctx.fillText(title, txt_x, txt_y);
 
-    let txt_x = x + radius * 2.25;
+    txt_x = x + margin;
     score_ctx.fillText(`${game.p1_score}`, txt_x, txt_y);
     game.draw_circle(score_ctx, x, y, radius, game.get_player_color(1));
 
     score_ctx.fillStyle = "white";
-    x = score_ctx.canvas.width - score_ctx.canvas.width / 4 + margin;
-    txt_x = x + radius * 2.25;
-    score_ctx.fillText(`${game.p2_score}`, x + radius * 2.5, txt_y);
+    x = txt_x + score_ctx.measureText("000").width + radius;
+    txt_x = x + margin;
+    score_ctx.fillText(`${game.p2_score}`, txt_x, txt_y);
     game.draw_circle(score_ctx, x, y, radius, game.get_player_color(-1));
   
 };
@@ -44,15 +46,20 @@ export const alert = {
 
         game_ctx.font = `${font_size}px 'Press Start 2P'`;
 
-        let max_width = 0;
+        let max = {
+            width: 0,
+            message: ''
+        };
+
         message.forEach((e) => {
-            if (game_ctx.measureText(e).width > max_width) {
-                max_width = game_ctx.measureText(e).width;
+            if (game_ctx.measureText(e).width > max.width) {
+                max.width = game_ctx.measureText(e).width;
+                max.message = e;
             }
         });
         
-        let w = max_width + margin * 2.5;
-        let h = font_size * message.length + margin * 4;
+        let w = Math.min(max.width + margin * 2.5, game_ctx.canvas.width * 0.9);
+        let h = font_size * message.length + margin * 2;
 
         const size = [w, h];
         const position = [game_ctx.canvas.width / 2 - (size[0] / 2), 
@@ -61,11 +68,13 @@ export const alert = {
         game_ctx.globalAlpha = 0.9;
         game_ctx.fillStyle = "rgb(50, 50, 50)";
         game_ctx.beginPath();
-        game_ctx.roundRect(...position, ...size, 25);
+        game_ctx.roundRect(...position, ...size, 20);
         game_ctx.fill();
         game_ctx.globalAlpha = 1.0;
 
         game_ctx.fillStyle = "white";
+
+        font_size = reduce_font(game_ctx, max.message, font_size, w * 0.85);
 
         let start_y = game_ctx.canvas.height / 2 + font_size / 2 - (margin * (message.length - 1) / 2);
 
@@ -76,6 +85,16 @@ export const alert = {
         }
 
     }
+};
+
+const reduce_font = (ctx, text, font_size, max_size) => {
+
+    ctx.font = `${font_size}px 'Press Start 2P'`;
+    while(ctx.measureText(text).width > max_size) {
+        font_size--;
+        ctx.font = `${font_size}px 'Press Start 2P'`;
+    }
+    return font_size;
 };
 
 export const declare_winner = (p1, p2) => {
