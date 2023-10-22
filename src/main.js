@@ -38,10 +38,12 @@ const __touch_device__ = window.ontouchstart !== undefined;
 
 //*******************************************************//
 
-const game = new game_board();
+const game = new game_board(8, 0, 0);
 game.draw(game_ctx);
 draw_scoreboard(game);
+ai.delay=1;
 ai.loop(game);
+
 
 if (__touch_device__) {
 	game_canvas.ontouchstart = (e) => input(e.pageX, e.pageY);
