@@ -1,4 +1,5 @@
 import { check_valid_move } from "./matrix.js";
+import { draw_circle } from "./utility.js";
 
 export class game_board {
     constructor(board_size=8, p1_type=1, p2_type=0, draw_valid_moves=true) {
@@ -183,7 +184,7 @@ export class game_board {
                     }
 
                     // player chips
-                    this.draw_circle(ctx, circle_x, circle_y, player_radius, color);
+                    draw_circle(ctx, circle_x, circle_y, player_radius, color);
 
                 } else if (check_valid_move(this.get_board, x, y, this.get_player_turn)) {
                     
@@ -191,23 +192,13 @@ export class game_board {
                     this.valid_move_list.push([x , y]);
 
                     if (this.draw_valid_moves && this.get_player_type(this.get_player_turn) === 1) {
-                        this.draw_circle(ctx, circle_x, circle_y, valid_move_radius, color);
+                        draw_circle(ctx, circle_x, circle_y, valid_move_radius, color);
                     }
                 }
             }
         }
 
         this.update_score(p1, p2);
-
-    }
-
-    draw_circle(ctx, circle_x, circle_y, radius, color) {
-
-        ctx.beginPath();
-        ctx.arc(circle_x, circle_y, radius, 0, 2 * Math.PI);
-        ctx.stroke();
-        ctx.fillStyle = color;
-        ctx.fill();
 
     }
 

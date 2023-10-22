@@ -26,13 +26,13 @@ export const draw_scoreboard = (game) => {
 
     txt_x = x + margin;
     score_ctx.fillText(`${game.p1_score}`, txt_x, txt_y);
-    game.draw_circle(score_ctx, x, y, radius, game.get_player_color(1));
+    draw_circle(score_ctx, x, y, radius, game.get_player_color(1));
 
     score_ctx.fillStyle = "white";
     x = txt_x + score_ctx.measureText("0000").width + radius;
     txt_x = x + margin;
     score_ctx.fillText(`${game.p2_score}`, txt_x, txt_y);
-    game.draw_circle(score_ctx, x, y, radius, game.get_player_color(-1));
+    draw_circle(score_ctx, x, y, radius, game.get_player_color(-1));
   
 };
 
@@ -95,6 +95,16 @@ const reduce_font = (ctx, text, font_size, max_size) => {
         ctx.font = `${font_size}px 'Press Start 2P'`;
     }
     return font_size;
+};
+
+export const draw_circle = (ctx, circle_x, circle_y, radius, color) => {
+
+    ctx.beginPath();
+    ctx.arc(circle_x, circle_y, radius, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.fill();
+
 };
 
 export const declare_winner = (p1, p2) => {
