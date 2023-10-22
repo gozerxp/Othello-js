@@ -62,12 +62,26 @@ const ai_evaluate = (board, turn, valid_moves) => {
     const temp_board = new game_board(board.length);
     temp_board.turn = turn;
 
+    // if a corner is available, grab it.
+    const sweet_spots = [[0, 0],[0, board.length - 1],
+                        [board.length - 1, 0],[board.length - 1 ,board.length - 1]];
+
     let best_moves = [];
 
     for (let i = 0; i < valid_moves.length; i++) {
 
         let x = valid_moves[i][0];
         let y = valid_moves[i][1];
+
+        sweet_spots.forEach(e => {
+            //found a sweet spot
+            if (e[0] === x && e[1] === y) {
+                console.log("SWEEEEET!");
+                console.log("x:", x, "y:", y);
+                best_moves = [];
+                return i;
+            }
+        });
 
         temp_board.update_board = board;
 
