@@ -5,7 +5,7 @@ Written by Dan Andersen
 import { game_board } from './othello.js';
 import { check_valid_move, render_move } from "./matrix.js";
 import { draw_scoreboard, alert, check_game_over } from './utility.js';
-import { ai_loop } from './ai.js';
+import { ai } from './ai.js';
 
 const _VERSION_ = "1.0.0 BETA";
 export const game_ctx = document.getElementById("game_canvas").getContext("2d");
@@ -41,7 +41,7 @@ const __touch_device__ = window.ontouchstart !== undefined;
 const game = new game_board();
 game.draw(game_ctx);
 draw_scoreboard(game);
-ai_loop(game);
+ai.loop(game);
 
 if (__touch_device__) {
 	game_canvas.ontouchstart = (e) => input(e.pageX, e.pageY);
@@ -56,7 +56,7 @@ const input = (x, y) => {
         game.draw(game_ctx);
         draw_scoreboard(game);
         alert.active = false;
-        ai_loop(game);
+        ai.loop(game);
         return;
     } 
 
@@ -64,7 +64,7 @@ const input = (x, y) => {
         game.draw(game_ctx);
         draw_scoreboard(game);
         alert.active = false;
-        ai_loop(game);
+        ai.loop(game);
         return;
     }
 
@@ -80,7 +80,7 @@ const input = (x, y) => {
         game.game_over = check_game_over(game);
 
         if (!game.game_over) {
-            ai_loop(game);
+            ai.loop(game);
         }
     }
     

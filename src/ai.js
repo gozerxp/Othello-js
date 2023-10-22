@@ -3,20 +3,20 @@ import { game_board } from './othello.js';
 import { render_move } from "./matrix.js";
 import { alert, draw_scoreboard, check_game_over } from './utility.js';
 
-export const ai_loop = (game, delay=250) => {
-    // 0 === cpu. only loop while turn belongs to the cpu. 
-    // multiple turns could occur if there were no valid moves for the player.
+export const ai = {
+    delay: 250,
+    loop: function(game) {
+        // 0 === cpu. only loop while turn belongs to the cpu. 
+        // multiple turns could occur if there were no valid moves for the player.
+        let interval = setInterval(() => {
 
-    //delay = 1;
+            game.game_over = ai_move(game);
 
-    let interval = setInterval(() => {
-
-        game.game_over = ai_move(game);
-
-        if (game.get_player_type(game.get_player_turn) !== 0 || alert.active || game.game_over) {
-            clearInterval(interval);
-        }
-    }, delay);
+            if (game.get_player_type(game.get_player_turn) !== 0 || alert.active || game.game_over) {
+                clearInterval(interval);
+            }
+        }, this.delay);
+    }
 
 };
 
@@ -73,15 +73,13 @@ const ai_evaluate = (board, turn, valid_moves) => {
         let x = valid_moves[i][0];
         let y = valid_moves[i][1];
 
-        sweet_spots.forEach(e => {
+        for (let ii = 0; ii < sweet_spots.length; ii++){
+            
             //found a sweet spot
-            if (e[0] === x && e[1] === y) {
-                console.log("SWEEEEET!");
-                console.log("x:", x, "y:", y);
-                best_moves = [];
+            if (sweet_spots[ii][0] === x && sweet_spots[ii][1] === y) {
                 return i;
             }
-        });
+        }
 
         temp_board.update_board = board;
 

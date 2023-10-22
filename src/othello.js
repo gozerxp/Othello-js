@@ -214,9 +214,9 @@ export class game_board {
     get_player_color(player) {
         switch(player)  {
             case 1:
-                return "blue";
+                return "dodgerblue";
             case -1:
-                return "red";
+                return "black";
             default:
                 return "yellow"; //valid move marker
         }

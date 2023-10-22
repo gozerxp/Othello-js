@@ -78,7 +78,7 @@ export function render_move (matrix, x, y, turn) {
     return new_board;
 }
 
+//make sure loop doesnt trail off beyond the boundaries of the board size.
 function check_bounds(x, y, size) {
-
     return !(x > size || x < 0 || y > size || y < 0);
 }
