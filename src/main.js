@@ -3,7 +3,7 @@ Written by Dan Andersen
 */
 
 import { game_board } from './othello.js';
-import { draw_scoreboard } from './utility.js';
+import { resize_display } from './utility.js';
 import { ai } from './ai.js';
 import { input } from './input.js';
 
@@ -15,32 +15,14 @@ const canvas_margin = {
     left: 0
 };
 
-let aspect_ratio = (3/4);
-
-if (window.innerHeight > window.innerWidth) {
-    aspect_ratio = (4/3);
-}
-
-game_ctx.canvas.height = aspect_ratio * game_ctx.canvas.width - canvas_margin.top;
-
-if (game_ctx.canvas.width > window.innerWidth) {
-    game_ctx.canvas.width = window.innerWidth;
-1}
-
-if(game_ctx.canvas.height + canvas_margin.top > window.innerHeight) {
-    game_ctx.canvas.height = window.innerHeight - canvas_margin.top;
-}
-
-
-
 //check for touchscreen
 const __touch_device__ = window.ontouchstart !== undefined;
 
 //*******************************************************//
 
+
 const game = new game_board();
-game.draw(game_ctx);
-draw_scoreboard(game);
+resize_display(game, game_ctx, canvas_margin.top);
 ai.loop(game);
 
 
@@ -49,5 +31,7 @@ if (__touch_device__) {
 } else {
 	game_canvas.onclick = (e) => input(e.clientX, e.clientY, game, game_ctx, canvas_margin);
 }
+
+window.onresize = () => resize_display(game, game_ctx, canvas_margin.top);
 
 

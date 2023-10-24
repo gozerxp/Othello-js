@@ -30,7 +30,6 @@ export const input = (x, y, game, game_ctx, margin) => {
         game.switch_player_turn();
         game.draw(game_ctx);
         draw_scoreboard(game);
-
         game.game_over = check_game_over(game);
 
         if (!game.game_over) {

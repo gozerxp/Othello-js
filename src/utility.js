@@ -1,14 +1,22 @@
 import { alert } from './alert.js';
 import { game_ctx } from './main.js';
+import { RGB, Color_Fade } from './fade.js';
 
-const score_ctx = document.getElementById("score_canvas").getContext("2d");
-if (score_ctx.canvas.width > window.innerWidth) {
-    score_ctx.canvas.width = window.innerWidth;
-}
+export const score_ctx = document.getElementById("score_canvas").getContext("2d");
+
+const aspect_ratio = (4/3);
+
+export const resize_display = (game, game_ctx, top_margin) => {
+    game_ctx.canvas.height = window.innerHeight - top_margin;
+    game_ctx.canvas.width = Math.min(window.innerHeight * aspect_ratio, window.innerWidth);
+    score_ctx.canvas.width = game_ctx.canvas.width;
+    game.draw(game_ctx);
+    draw_scoreboard(game);
+};
 
 export const draw_scoreboard = (game) => {
 
-    let font_size = 22;
+    let font_size = 20;
     const radius = 13;
     const margin = radius * 2;
 
@@ -30,7 +38,7 @@ export const draw_scoreboard = (game) => {
     draw_circle(score_ctx, x, y, radius, game.get_player_color(1));
 
     score_ctx.fillStyle = "white";
-    x = txt_x + score_ctx.measureText("0000").width + radius;
+    x = txt_x + score_ctx.measureText("000").width + radius;
     txt_x = x + margin;
     score_ctx.fillText(`${game.p2_score}`, txt_x, txt_y);
     draw_circle(score_ctx, x, y, radius, game.get_player_color(-1));
@@ -56,6 +64,23 @@ export const draw_circle = (ctx, circle_x, circle_y, radius, color) => {
     ctx.fill();
 
 };
+
+export const flip_fade = (ctx, color1, color2, x, y, radius, delay=50)  => {
+
+    let color1_RGB = new RGB(color1);
+    let color2_RGB = new RGB(color2);
+
+    color_list = Color_Fade.twoColorFade(color1_RGB, color2_RGB, 10);
+
+    let index = 0;
+
+    let interval = setInterval(() => {
+        draw_circle(ctx, x, y, radius, color_list[index]);
+        index++;
+        if (index > color_list.length - 1) clearInterval(interval);
+    }, delay);
+
+}
 
 export const declare_winner = (p1, p2) => {
     if(p1 === p2) {

@@ -1,5 +1,5 @@
 import { check_valid_move } from "./matrix.js";
-import { draw_circle } from "./utility.js";
+import { draw_circle, flip_fade } from "./utility.js";
 
 export class game_board {
     constructor(board_size=8, p1_type=1, p2_type=0, draw_valid_moves=true) {
@@ -28,6 +28,8 @@ export class game_board {
         //this list is generated at rendering.
         //you can request a custom list by using get_valid_moves method.
         this.valid_move_list = [];
+
+
 
         this.size = Math.min(Math.max(board_size, 4), 25);
 
@@ -206,11 +208,11 @@ export class game_board {
     get_player_color(player) {
         switch(player)  {
             case 1:
-                return "dodgerblue";
+                return "rgb(30, 144, 255)";
             case -1:
-                return "black";
+                return "rgb(0, 0, 0)";
             default:
-                return "yellow"; //valid move marker
+                return "rgb(255, 255, 0)"; //valid move marker
         }
     }
 
