@@ -158,7 +158,7 @@ export class game_board {
         let x_size = this.x_size(ctx);
         let y_size = this.y_size(ctx);
         let player_radius = Math.min(x_size / 4, y_size / 3);
-        let valid_move_radius = x_size / 15;
+        let valid_move_radius = x_size / 20;
         let p1 = 0, p2 = 0;
 
         //compile updated valid move list on the fly

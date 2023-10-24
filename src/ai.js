@@ -6,7 +6,7 @@ import { alert } from './alert.js';
 
 export const ai = {
 
-    delay: 250,
+    delay: 350,
     loop: function (game) {
         // 0 === cpu. only loop while turn belongs to the cpu. 
         // multiple turns could occur if there were no valid moves for the player.
