@@ -26,7 +26,9 @@ export const input = (x, y, game, game_ctx, margin) => {
     y = parseInt((y - margin.top) / game.y_size(game_ctx));
 
     if (check_valid_move(game.get_board, x, y, game.get_player_turn)) {
-        game.update_board = render_move(game.get_board, x, y, game.get_player_turn);
+        let render = render_move(game.get_board, x, y, game.get_player_turn);
+        game.update_board = render.new_board;
+
         game.switch_player_turn();
         game.draw(game_ctx);
         draw_scoreboard(game);

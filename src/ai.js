@@ -38,8 +38,11 @@ export const ai = {
         let index = this.evaluate(game.get_board, game.get_player_turn, valid_moves);
         let x = valid_moves[index][0];
         let y = valid_moves[index][1];
-    
-        game.update_board = render_move(game.get_board, x, y, game.get_player_turn);
+
+   
+        let render = render_move(game.get_board, x, y, game.get_player_turn);
+        game.update_board = render.new_board
+
         game.switch_player_turn();
         game.draw(game_ctx);
         draw_scoreboard(game);
@@ -80,8 +83,10 @@ export const ai = {
     
             temp_board.check_score();
             let pre_score = temp_board.get_score(turn);
-    
-            temp_board.update_board = render_move(board, x, y, turn);
+
+   
+            let render = render_move(board, x, y, turn);
+            temp_board.update_board = render.new_board;
     
             temp_board.check_score();
             let post_score = temp_board.get_score(turn);

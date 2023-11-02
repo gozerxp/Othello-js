@@ -1,3 +1,5 @@
+import { flip_fade } from './utility.js';
+
 //keep list of all matrix steps that are possible.
 const DIRECTIONS = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 
@@ -40,6 +42,7 @@ export function render_move (matrix, x, y, turn) {
     //create deep copy so changes don't affect existing board object.
     const new_board =  JSON.parse(JSON.stringify(matrix));
     new_board[x][y] = turn;
+    let flip_list = [];
 
     for (let i = 0; i < DIRECTIONS.length; i++) {
 
@@ -64,6 +67,9 @@ export function render_move (matrix, x, y, turn) {
                 do { //draw move loop
 
                     new_board[new_cell_x][new_cell_y] = turn;
+
+                    flip_list.push([new_cell_x, new_cell_y]);
+
                     new_cell_x -= DIRECTIONS[i][0];
                     new_cell_y -= DIRECTIONS[i][1];
 
@@ -75,7 +81,7 @@ export function render_move (matrix, x, y, turn) {
         }
     }
 
-    return new_board;
+    return { new_board, flip_list };
 }
 
 //make sure loop doesnt trail off beyond the boundaries of the board size.
