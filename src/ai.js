@@ -22,9 +22,8 @@ export const ai = {
 
     move: function(game) {
 
-        if (game.get_player_type(game.get_player_turn) !== 0) {
+        if (game.get_player_type(game.get_player_turn) !== 0) 
             return false;
-        }
     
         let valid_moves = game.get_valid_move_list;
     
@@ -72,9 +71,9 @@ export const ai = {
             for (let ii = 0; ii < sweet_spots.length; ii++){
                 
                 //found a sweet spot
-                if (sweet_spots[ii][0] === x && sweet_spots[ii][1] === y) {
+                if (sweet_spots[ii][0] === x && sweet_spots[ii][1] === y)
                     return i;
-                }
+
             }
     
             temp_board.update_board = board;

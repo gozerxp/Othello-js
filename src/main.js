@@ -20,11 +20,11 @@ const __touch_device__ = window.ontouchstart !== undefined;
 
 //*******************************************************//
 
-
 const game = new game_board();
 resize_display(game, game_ctx, canvas_margin.top);
 ai.loop(game);
 
+//*******************************************************//
 
 if (__touch_device__) {
 	game_canvas.ontouchstart = (e) => input(e.pageX, e.pageY, game, game_ctx, canvas_margin);

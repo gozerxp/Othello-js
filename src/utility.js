@@ -7,11 +7,12 @@ export const score_ctx = document.getElementById("score_canvas").getContext("2d"
 const aspect_ratio = (4/3);
 
 export const resize_display = (game, game_ctx, top_margin) => {
-    game_ctx.canvas.height = window.innerHeight - top_margin;
+    game_ctx.canvas.height = Math.max(window.innerHeight - top_margin, 500);
     game_ctx.canvas.width = Math.min(window.innerHeight * aspect_ratio, window.innerWidth);
     score_ctx.canvas.width = game_ctx.canvas.width;
     game.draw(game_ctx);
     draw_scoreboard(game);
+    if (alert.active) alert.draw(game_ctx, alert.text);
 };
 
 export const draw_scoreboard = (game) => {
@@ -94,9 +95,9 @@ export const declare_winner = (p1, p2) => {
 
 export const check_game_over = (game) => {
 
-    if (game.get_valid_move_list.length) {
+    if (game.get_valid_move_list.length) 
         return false;
-    }
+
         //see if valid moves exists for other player.
     if (game.get_valid_moves(game.get_board, -game.get_player_turn).length) {
 
@@ -104,13 +105,13 @@ export const check_game_over = (game) => {
         game.draw(game_ctx);
         draw_scoreboard(game);
 
-        alert.pop(game_ctx, ["No valid moves!", `Player ${game.get_player(-game.get_player_turn)} turn skipped.`]);
+        alert.draw(game_ctx, ["No valid moves!", `Player ${game.get_player(-game.get_player_turn)} turn skipped.`]);
 
         return false;
 
     } else {
 
-        alert.pop(game_ctx, ["GAME OVER!", declare_winner(game.p1_score, game.p2_score)], 24);
+        alert.draw(game_ctx, ["GAME OVER!", declare_winner(game.p1_score, game.p2_score)], 24);
         return true;
     }
 };

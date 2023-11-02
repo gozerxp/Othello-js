@@ -3,27 +3,30 @@ import { reduce_font } from './utility.js';
 
 export const alert = {
     active: false,
-    pop: function (ctx, message, font_size = 18) {
+    text: [],
+    draw: function (ctx, text, font_size = 18) {
 
         this.active = true;
 
+        this.text = text;
+
         let max = {
             width: 0,
-            message: ''
+            text: ''
         };
 
         const margin = font_size * 1.75;
         ctx.font = `${font_size}px 'Press Start 2P'`;
 
-        message.forEach((e) => {
+        this.text.forEach((e) => {
             if (ctx.measureText(e).width > max.width) {
                 max.width = ctx.measureText(e).width;
-                max.message = e;
+                max.text = e;
             }
         });
 
         let w = Math.min(max.width + margin * 2.5, ctx.canvas.width * 0.9);
-        let h = font_size * message.length + margin * 2;
+        let h = font_size * text.length + margin * 2;
 
         const size = [w, h];
         const position = [ctx.canvas.width / 2 - (size[0] / 2),
@@ -37,14 +40,14 @@ export const alert = {
         
         ctx.globalAlpha = 1;
         ctx.fillStyle = "white";
-        font_size = reduce_font(ctx, max.message, font_size, w * 0.85);
+        font_size = reduce_font(ctx, max.text, font_size, w * 0.85);
 
-        let start_y = ctx.canvas.height / 2 + font_size / 2 - (margin * (message.length - 1) / 2);
+        let start_y = ctx.canvas.height / 2 + font_size / 2 - (margin * (this.text.length - 1) / 2);
 
-        for (let i = 0; i < message.length; i++) {
-            position[0] = (ctx.canvas.width / 2) - (ctx.measureText(message[i]).width / 2);
+        for (let i = 0; i < this.text.length; i++) {
+            position[0] = (ctx.canvas.width / 2) - (ctx.measureText(this.text[i]).width / 2);
             position[1] = start_y + (margin * i);
-            ctx.fillText(message[i], ...position);
+            ctx.fillText(this.text[i], ...position);
         }
 
     }
