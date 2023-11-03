@@ -1,5 +1,6 @@
 import { check_valid_move } from "./matrix.js";
-import { draw_circle, flip_fade } from "./utility.js";
+import { draw_circle } from "./utility.js";
+import { RGB, Color_Fade } from './fade.js';
 
 export class game_board {
     constructor(board_size=8, p1_type=1, p2_type=0, draw_valid_moves=true) {
@@ -118,9 +119,19 @@ export class game_board {
         this.turn = -this.turn;
     }
 
-    draw(ctx) {
+    draw(ctx, flip_list=[]) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         this.draw_grid(ctx); 
+
+        if (flip_list.length > 0) {
+            let x_size = this.x_size(ctx);
+            let y_size = this.y_size(ctx);
+            let color1 = this.get_player_color(this.get_player_turn);
+            let color2 = this.get_player_color(-this.get_player_turn);
+            let radius = Math.min(x_size / 4, y_size / 3);
+            this.flip_fade (ctx, color1, color2, flip_list, radius) 
+        }
+           
         this.render_game(ctx);
     }
 
@@ -203,6 +214,29 @@ export class game_board {
 
         this.update_score(p1, p2);
 
+    }
+
+    flip_fade (ctx, color1, color2, flip_list, radius, delay=150) {
+
+        let color1_RGB = new RGB(color1);
+        let color2_RGB = new RGB(color2);
+    
+        let color_list = Color_Fade.twoColorFade(color1_RGB, color2_RGB, 25);
+    
+        let index = 0;
+    
+        flip_list.forEach(e => {
+    
+            let interval = setInterval(() => {
+                let circle_x = (e[0] * this.x_size) + (this.x_size / 2);
+                let circle_y = (e[1] * this.y_size) + (this.y_size / 2);
+                draw_circle(ctx, circle_x, circle_y, radius, color_list[index]);
+                index++;
+                if (index > color_list.length - 1) clearInterval(interval);
+            }, delay);
+    
+        });
+    
     }
 
     get_player_color(player) {

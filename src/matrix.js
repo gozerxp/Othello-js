@@ -1,5 +1,3 @@
-import { flip_fade } from './utility.js';
-
 //keep list of all matrix steps that are possible.
 const DIRECTIONS = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 

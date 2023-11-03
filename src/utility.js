@@ -1,6 +1,6 @@
 import { alert } from './alert.js';
 import { game_ctx } from './main.js';
-import { RGB, Color_Fade } from './fade.js';
+
 
 export const score_ctx = document.getElementById("score_canvas").getContext("2d");
 
@@ -66,23 +66,6 @@ export const draw_circle = (ctx, circle_x, circle_y, radius, color) => {
 
 };
 
-export const flip_fade = (ctx, color1, color2, x, y, radius, delay=50)  => {
-
-    let color1_RGB = new RGB(color1);
-    let color2_RGB = new RGB(color2);
-
-    color_list = Color_Fade.twoColorFade(color1_RGB, color2_RGB, 10);
-
-    let index = 0;
-
-    let interval = setInterval(() => {
-        draw_circle(ctx, x, y, radius, color_list[index]);
-        index++;
-        if (index > color_list.length - 1) clearInterval(interval);
-    }, delay);
-
-}
-
 export const declare_winner = (p1, p2) => {
     if(p1 === p2) {
         return 'Tied game!';
@@ -105,13 +88,13 @@ export const check_game_over = (game) => {
         game.draw(game_ctx);
         draw_scoreboard(game);
 
-        alert.draw(game_ctx, ["No valid moves!", `Player ${game.get_player(-game.get_player_turn)} turn skipped.`]);
+        alert.draw(game_ctx, ["No valid moves!", `Player ${game.get_player(-game.get_player_turn)} turn skipped.`], 18);
 
         return false;
 
     } else {
 
-        alert.draw(game_ctx, ["GAME OVER!", declare_winner(game.p1_score, game.p2_score)], 24);
+        alert.draw(game_ctx, ["GAME OVER!", declare_winner(game.p1_score, game.p2_score)], 32);
         return true;
     }
 };

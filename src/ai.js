@@ -44,7 +44,7 @@ export const ai = {
         game.update_board = render.new_board
 
         game.switch_player_turn();
-        game.draw(game_ctx);
+        game.draw(game_ctx, render.flip_list);
         draw_scoreboard(game);
     
         return check_game_over(game);

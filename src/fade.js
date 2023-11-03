@@ -14,8 +14,12 @@ export class RGB {
 
     HexToRGB (hex) {
         let h = hex.slice(hex.startsWith('#') ? 1 : 0);
-        if (h.length === 3) h = [...h].map(x => x + x).join('');
-        else if (h.length === 8) this.alpha = true;
+        
+        if (h.length === 3) 
+            h = [...h].map(x => x + x).join('');
+        else if (h.length === 8) 
+            this.alpha = true;
+        
         h = parseInt(h, 16);
 
         this.r = (h >>> (this.alpha ? 24 : 16));

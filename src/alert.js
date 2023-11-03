@@ -4,11 +4,15 @@ import { reduce_font } from './utility.js';
 export const alert = {
     active: false,
     text: [],
-    draw: function (ctx, text, font_size = 18) {
+    font_size: 18,
+    draw: function (ctx, text, font_size=this.font_size) {
 
         this.active = true;
 
         this.text = text;
+
+        if (font_size != this.font_size) 
+            this.font_size = font_size;
 
         let max = {
             width: 0,
