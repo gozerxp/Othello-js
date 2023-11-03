@@ -1,15 +1,33 @@
 export class RGB {
 
-    constructor(hex="#0") {
+    constructor(rgb="rgb(0, 0, 0)") {
 
-        this.r = 0;   //red
-        this.g = 0;   //green
-        this.b = 0;   //blue
-        this.a = 0;   //alpha
+        this.red = 0;
+        this.green = 0;
+        this.blue = 0;
+        this.alpha = 0; 
 
-        this.alpha = false;
+        this.alpha_check = false;
 
-        this.HexToRGB (hex);
+        this.parseRGB (rgb);
+    }
+
+    parseRGB(rgb) {
+        let colorArr = rgb.slice( 
+            rgb.indexOf("(") + 1,  
+            rgb.indexOf(")") 
+        ).split(", "); 
+
+        this.red = parseInt(colorArr[0]);
+        this.green = parseInt(colorArr[1]);
+        this.blue = parseInt(colorArr[2]);
+
+        //alpha channel present
+        if (colorArr.length > 3) {
+            this.alpha_check = true;
+            this.alpha = parseInt(colorArr[3]);
+        }
+
     }
 
     HexToRGB (hex) {
@@ -18,22 +36,22 @@ export class RGB {
         if (h.length === 3) 
             h = [...h].map(x => x + x).join('');
         else if (h.length === 8) 
-            this.alpha = true;
+            this.alpha_check = true;
         
         h = parseInt(h, 16);
 
-        this.r = (h >>> (this.alpha ? 24 : 16));
-        this.g = ((h & (this.alpha ? 0x00ff0000 : 0x00ff00)) >>> (this.alpha ? 16 : 8));
-        this.b = ((h & (this.alpha ? 0x0000ff00 : 0x0000ff)) >>> (this.alpha ? 8 : 0));
-        this.a = this.alpha ? h & 0x000000ff : 0;
+        this.red = (h >>> (this.alpha_check ? 24 : 16));
+        this.green = ((h & (this.alpha_check ? 0x00ff0000 : 0x00ff00)) >>> (this.alpha_check ? 16 : 8));
+        this.blue = ((h & (this.alpha_check ? 0x0000ff00 : 0x0000ff)) >>> (this.alpha_check ? 8 : 0));
+        this.alpha = this.alpha_check ? h & 0x000000ff : 0;
     }
 
     getRGB_string (show_alpha=false) {
         let txt = "rgb";
-        txt += this.alpha && show_alpha ? 'a' : '';
+        txt += this.alpha_check && show_alpha ? 'a' : '';
         txt += '(';
-        txt += `${this.r}, ${this.g}, ${this.b}`;
-        txt += this.alpha && show_alpha ? `, ${this.a}` : '';
+        txt += `${this.red}, ${this.green}, ${this.blue}`;
+        txt += this.alpha_check && show_alpha ? `, ${this.alpha}` : '';
         txt += ')';
         return txt;
     }
@@ -43,16 +61,16 @@ export const Color_Fade = {
 
     twoColorFade : function (color1, color2, length) {
 
-        let rIncr = (color2.r - color1.r) / (length - 1),
-            gIncr = (color2.g - color1.g) / (length - 1),
-            bIncr = (color2.b - color1.b) / (length - 1),
-            r = color1.r,
-            g = color1.g,
-            b = color1.b,
+        let rIncr = (color2.red - color1.red) / (length - 1),
+            gIncr = (color2.green - color1.green) / (length - 1),
+            bIncr = (color2.blue - color1.blue) / (length - 1),
+            r = color1.red,
+            g = color1.green,
+            b = color1.blue,
             colors = [];
 
         for (let ii = 0; ii < length; ii++) {
-            colors.push({r: parseInt(r), b: parseInt(b), g: parseInt(g)});
+            colors.push(`rgb(${parseInt(r)}, ${parseInt(g)}, ${parseInt(b)})`);
             r = Math.max(r + rIncr, 0);
             g = Math.max(g + gIncr, 0);
             b = Math.max(b + bIncr, 0);

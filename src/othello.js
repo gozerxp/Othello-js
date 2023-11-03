@@ -115,6 +115,12 @@ export class game_board {
         }
     }
 
+    player_radius(ctx) {
+        let x_size = this.x_size(ctx);
+        let y_size = this.y_size(ctx);
+        return Math.min(x_size / 4, y_size / 3);
+    }
+
     switch_player_turn() {
         this.turn = -this.turn;
     }
@@ -124,15 +130,11 @@ export class game_board {
         this.draw_grid(ctx); 
 
         if (flip_list.length > 0) {
-            let x_size = this.x_size(ctx);
-            let y_size = this.y_size(ctx);
-            let color1 = this.get_player_color(this.get_player_turn);
-            let color2 = this.get_player_color(-this.get_player_turn);
-            let radius = Math.min(x_size / 4, y_size / 3);
-            this.flip_fade (ctx, color1, color2, flip_list, radius) 
-        }
-           
+            this.flip_fade (ctx, flip_list);
+        } 
+
         this.render_game(ctx);
+        
     }
 
     x_size(ctx) {
@@ -168,7 +170,7 @@ export class game_board {
     render_game(ctx) {
         let x_size = this.x_size(ctx);
         let y_size = this.y_size(ctx);
-        let player_radius = Math.min(x_size / 4, y_size / 3);
+        let player_radius = this.player_radius(ctx);
         let valid_move_radius = x_size / 20;
         let p1 = 0, p2 = 0;
 
@@ -216,27 +218,39 @@ export class game_board {
 
     }
 
-    flip_fade (ctx, color1, color2, flip_list, radius, delay=150) {
+    flip_fade (ctx, flip_list, delay=150) {
 
-        let color1_RGB = new RGB(color1);
-        let color2_RGB = new RGB(color2);
+        let radius = this.player_radius(ctx);
+ 
+        let color1 = this.get_player_color(this.get_player_turn);
+        let color2 = this.get_player_color(-this.get_player_turn);
+
+        //console.log(color1, ',', color2);
+
+        const color1_RGB = new RGB(color1);
+        const color2_RGB = new RGB(color2);
+
+        //console.log(color1_RGB, ',', color2_RGB);
     
-        let color_list = Color_Fade.twoColorFade(color1_RGB, color2_RGB, 25);
+        let color_list = Color_Fade.twoColorFade(color1_RGB, color2_RGB, 10);
+        //console.log(color_list);
     
-        let index = 0;
-    
-        flip_list.forEach(e => {
-    
-            let interval = setInterval(() => {
+        let color_index = 0;
+
+        let interval = setInterval(() => {
+
+            flip_list.forEach(e => {
+                console.log(e[0], ",", e[1]);
                 let circle_x = (e[0] * this.x_size) + (this.x_size / 2);
                 let circle_y = (e[1] * this.y_size) + (this.y_size / 2);
-                draw_circle(ctx, circle_x, circle_y, radius, color_list[index]);
-                index++;
-                if (index > color_list.length - 1) clearInterval(interval);
-            }, delay);
-    
-        });
-    
+                console.log(circle_x, ",", circle_y);
+                draw_circle(ctx, circle_x, circle_y, radius, color_list[color_index]);
+            });
+
+            color_index++;
+            if (color_index > color_list.length - 1) clearInterval(interval);
+
+        }, delay);
     }
 
     get_player_color(player) {
@@ -244,7 +258,7 @@ export class game_board {
             case 1:
                 return "rgb(30, 144, 255)";
             case -1:
-                return "rgb(0, 0, 0)";
+                return "rgb(255, 0, 0)";
             default:
                 return "rgb(255, 255, 0)"; //valid move marker
         }
