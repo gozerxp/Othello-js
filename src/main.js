@@ -20,8 +20,9 @@ const __touch_device__ = window.ontouchstart !== undefined;
 
 //*******************************************************//
 
-const game = new game_board();
+const game = new game_board(8, 1, 0);
 resize_display(game, game_ctx, canvas_margin.top);
+
 ai.loop(game);
 
 //*******************************************************//

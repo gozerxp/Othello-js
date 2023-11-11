@@ -1,48 +1,73 @@
 import { alert } from './alert.js';
 import { game_ctx } from './main.js';
 
-
+export const title_ctx = document.getElementById("title_canvas").getContext("2d");
 export const score_ctx = document.getElementById("score_canvas").getContext("2d");
 
 const aspect_ratio = (4/3);
 
 export const resize_display = (game, game_ctx, top_margin) => {
-    game_ctx.canvas.height = Math.max(window.innerHeight - top_margin, 500);
+    game_ctx.canvas.height = Math.max(window.innerHeight - top_margin, 500) - score_ctx.canvas.height;
     game_ctx.canvas.width = Math.min(window.innerHeight * aspect_ratio, window.innerWidth);
-    score_ctx.canvas.width = game_ctx.canvas.width;
+    score_ctx.canvas.width = title_ctx.canvas.width = game_ctx.canvas.width;
     game.draw(game_ctx);
+    draw_titlebar(title_ctx);
     draw_scoreboard(game);
     if (alert.active) alert.draw(game_ctx, alert.text);
+};
+
+export const draw_titlebar = (ctx) => {
+
+    let title = "Othello.js";
+    let font_size = 24;
+
+    ctx.font = `${font_size}px 'Press Start 2P'`;
+
+    let y = (ctx.canvas.height / 2) + font_size / 2;
+    let x = ctx.canvas.width / 2 - (ctx.measureText(title).width / 2);
+
+    ctx.fillStyle = "white";
+    ctx.fillText(title, x, y);
+
 };
 
 export const draw_scoreboard = (game) => {
 
     let font_size = 20;
-    const radius = 13;
+    const ctx = score_ctx;
+    const radius = 14;
     const margin = radius * 2;
+    
+    ctx.font = `${font_size}px 'Press Start 2P'`;
 
-    score_ctx.fillStyle = "white";
-    score_ctx.clearRect(0, 0, score_ctx.canvas.width, score_ctx.canvas.height);
+    let total_width = margin + ctx.measureText(`${game.p1_score}`).width;
+    let text_buffer = ctx.measureText("0000").width;
+    total_width += text_buffer;
+    total_width += margin + ctx.measureText(`${game.p2_score}`).width;
 
-    let y = score_ctx.canvas.height / 2;
-    let x = score_ctx.canvas.width / 2 + margin;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    let title = "Othello.js";
-    font_size = reduce_font(score_ctx, title, font_size, score_ctx.canvas.width / 2 - margin);
-    let txt_y = y + font_size / 2;
-    let txt_x = score_ctx.canvas.width / 4 - (score_ctx.measureText(title).width / 2);
+    let x = ctx.canvas.width / 2 - total_width / 2 + radius;
+    let y = ctx.canvas.height / 2;
 
-    score_ctx.fillText(title, txt_x, txt_y);
+    draw_circle(ctx, x, y, radius, game.get_player_color(1));
 
-    txt_x = x + margin;
-    score_ctx.fillText(`${game.p1_score}`, txt_x, txt_y);
-    draw_circle(score_ctx, x, y, radius, game.get_player_color(1));
+    ctx.fillStyle = "white";
 
-    score_ctx.fillStyle = "white";
-    x = txt_x + score_ctx.measureText("000").width + radius;
-    txt_x = x + margin;
-    score_ctx.fillText(`${game.p2_score}`, txt_x, txt_y);
-    draw_circle(score_ctx, x, y, radius, game.get_player_color(-1));
+    let text_x = x + margin;
+    let text_y = y + font_size / 2;
+
+    ctx.fillText(`${game.p1_score}`, text_x, text_y);
+
+    x = text_x + ctx.measureText(`${game.p1_score}`).width + text_buffer;
+    
+    draw_circle(ctx, x, y, radius, game.get_player_color(-1));
+
+    text_x = x + margin;
+
+    ctx.fillStyle = "white";
+    ctx.fillText(`${game.p2_score}`, text_x, text_y);
+
   
 };
 
@@ -94,7 +119,7 @@ export const check_game_over = (game) => {
 
     } else {
 
-        alert.draw(game_ctx, ["GAME OVER!", declare_winner(game.p1_score, game.p2_score)], 32);
+        alert.draw(game_ctx, ["GAME OVER!", declare_winner(game.p1_score, game.p2_score)], 24);
         return true;
     }
 };

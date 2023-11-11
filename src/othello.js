@@ -240,10 +240,10 @@ export class game_board {
         let interval = setInterval(() => {
 
             flip_list.forEach(e => {
-                console.log(e[0], ",", e[1]);
+                //console.log(e[0], ",", e[1]);
                 let circle_x = (e[0] * this.x_size) + (this.x_size / 2);
                 let circle_y = (e[1] * this.y_size) + (this.y_size / 2);
-                console.log(circle_x, ",", circle_y);
+                //console.log(circle_x, ",", circle_y);
                 draw_circle(ctx, circle_x, circle_y, radius, color_list[color_index]);
             });
 
