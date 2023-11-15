@@ -258,7 +258,7 @@ export class game_board {
             case 1:
                 return "rgb(30, 144, 255)";
             case -1:
-                return "rgb(255, 0, 0)";
+                return "rgb(0, 0, 0)";
             default:
                 return "rgb(255, 255, 0)"; //valid move marker
         }

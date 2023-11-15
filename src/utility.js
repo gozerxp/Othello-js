@@ -21,7 +21,7 @@ export const draw_titlebar = (ctx) => {
     let title = "Othello.js";
     let font_size = 24;
 
-    ctx.font = `${font_size}px 'Press Start 2P'`;
+    font_size = reduce_font(ctx, title, font_size, ctx.canvas.width / 2);
 
     let y = (ctx.canvas.height / 2) + font_size / 2;
     let x = ctx.canvas.width / 2 - (ctx.measureText(title).width / 2);
