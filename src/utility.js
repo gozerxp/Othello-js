@@ -19,7 +19,7 @@ export const resize_display = (game, game_ctx, top_margin) => {
 export const draw_titlebar = (ctx) => {
 
     let title = "Othello.js";
-    let font_size = 24;
+    let font_size = 32;
 
     font_size = reduce_font(ctx, title, font_size, ctx.canvas.width / 2);
 
