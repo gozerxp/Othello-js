@@ -118,7 +118,7 @@ export class game_board {
     player_radius(ctx) {
         let x_size = this.x_size(ctx);
         let y_size = this.y_size(ctx);
-        return Math.min(x_size / 4, y_size / 3);
+        return Math.min(x_size / 3, y_size / 3);
     }
 
     switch_player_turn() {
