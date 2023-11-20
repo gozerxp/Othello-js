@@ -8,7 +8,7 @@ const aspect_ratio = (4/3);
 
 export const resize_display = (game, game_ctx, top_margin) => {
     game_ctx.canvas.height = Math.max(window.innerHeight - top_margin, 500) - score_ctx.canvas.height;
-    game_ctx.canvas.width = Math.min(window.innerHeight * aspect_ratio, window.innerWidth);
+    game_ctx.canvas.width = Math.min((window.innerHeight - top_margin * 2) * aspect_ratio, window.innerWidth);
     score_ctx.canvas.width = title_ctx.canvas.width = game_ctx.canvas.width;
     game.draw(game_ctx);
     draw_titlebar(title_ctx);
