@@ -30,7 +30,7 @@ export class game_board {
         //you can request a custom list by using get_valid_moves method.
         this.valid_move_list = [];
 
-
+        this.move_history = [];
 
         this.size = Math.min(Math.max(board_size, 4), 25);
 
@@ -256,9 +256,9 @@ export class game_board {
     get_player_color(player) {
         switch(player)  {
             case 1:
-                return "rgb(30, 144, 255)";
-            case -1:
                 return "rgb(0, 0, 0)";
+            case -1:
+                return "rgb(255, 255, 255)";
             default:
                 return "rgb(255, 255, 0)"; //valid move marker
         }
