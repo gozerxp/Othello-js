@@ -1,5 +1,6 @@
 /*
 Written by Dan Andersen
+2023 Gozerxp Software
 */
 
 import { game_board } from './othello.js';
