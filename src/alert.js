@@ -34,7 +34,7 @@ export const alert = {
 
         const size = [w, h];
         const position = [ctx.canvas.width / 2 - (size[0] / 2),
-        ctx.canvas.height / 2 - (size[1] / 2)];
+                            ctx.canvas.height / 2 - (size[1] / 2)];
 
         ctx.globalAlpha = 0.9;
         ctx.fillStyle = "rgb(55, 55, 55)";
