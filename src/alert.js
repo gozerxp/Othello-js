@@ -1,4 +1,5 @@
 import { reduce_font } from './utility.js';
+import { font_face } from './main.js';
 
 
 export const alert = {
@@ -20,7 +21,7 @@ export const alert = {
         };
 
         const margin = font_size * 1.75;
-        ctx.font = `${font_size}px 'Press Start 2P'`;
+        ctx.font = `${font_size}px '${font_face}'`;
 
         this.text.forEach((e) => {
             if (ctx.measureText(e).width > max.width) {

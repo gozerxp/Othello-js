@@ -4,11 +4,12 @@ Written by Dan Andersen
 */
 
 import { game_board } from './othello.js';
-import { resize_display } from './utility.js';
+import { resize_display, score_ctx, title_ctx } from './utility.js';
 import { ai } from './ai.js';
 import { input } from './input.js';
 
 const _VERSION_ = "1.0.0 BETA";
+export const font_face = "PressStart2P";
 export const game_ctx = document.getElementById("game_canvas").getContext("2d");
 
 const canvas_margin = {
@@ -22,9 +23,16 @@ const __touch_device__ = window.ontouchstart !== undefined;
 //*******************************************************//
 
 const game = new game_board(8, 1, 0);
-resize_display(game, game_ctx, canvas_margin.top);
 
-ai.loop(game);
+const game_font = new FontFace(`${font_face}`, `url(./assets/${font_face}.ttf)`);
+//draw game once font is loaded
+game_font.load().then((font) => {
+    document.fonts.add(font);
+    console.log("font loaded");
+
+    resize_display(game, game_ctx, canvas_margin.top);
+    ai.loop(game);
+});
 
 //*******************************************************//
 

@@ -1,5 +1,5 @@
 import { alert } from './alert.js';
-import { game_ctx } from './main.js';
+import { game_ctx, font_face } from './main.js';
 
 export const title_ctx = document.getElementById("title_canvas").getContext("2d");
 export const score_ctx = document.getElementById("score_canvas").getContext("2d");
@@ -38,7 +38,7 @@ export const draw_scoreboard = (game) => {
     const radius = 14;
     const margin = radius * 2;
     
-    ctx.font = `${font_size}px 'Press Start 2P'`;
+    ctx.font = `${font_size}px '${font_face}'`;
 
     let total_width = margin + ctx.measureText(`${game.p1_score}`).width;
     let text_buffer = ctx.measureText("0000").width;
@@ -73,10 +73,10 @@ export const draw_scoreboard = (game) => {
 
 export const reduce_font = (ctx, text, font_size, max_size) => {
 
-    ctx.font = `${font_size}px 'Press Start 2P'`;
+    ctx.font = `${font_size}px '${font_face}'`;
     while(ctx.measureText(text).width > max_size) {
         font_size--;
-        ctx.font = `${font_size}px 'Press Start 2P'`;
+        ctx.font = `${font_size}px  '${font_face}'`;
     }
     return font_size;
 };
