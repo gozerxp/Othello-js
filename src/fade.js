@@ -1,6 +1,6 @@
 export class RGB {
 
-    constructor(rgb="rgb(0, 0, 0)") {
+    constructor (rgb="rgb(0, 0, 0)") {
 
         this.red = 0;
         this.green = 0;
@@ -12,7 +12,7 @@ export class RGB {
         this.parseRGB (rgb);
     }
 
-    parseRGB(rgb) {
+    parseRGB (rgb) {
         let colorArr = rgb.slice( 
             rgb.indexOf("(") + 1,  
             rgb.indexOf(")") 

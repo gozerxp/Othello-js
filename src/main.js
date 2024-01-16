@@ -1,10 +1,11 @@
 /*
 Written by Dan Andersen
 2023 Gozerxp Software
+http://www.gozerxp.com/
 */
 
 import { game_board } from './othello.js';
-import { resize_display, score_ctx, title_ctx } from './utility.js';
+import { resize_display} from './utility.js';
 import { ai } from './ai.js';
 import { input } from './input.js';
 

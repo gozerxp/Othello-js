@@ -1,11 +1,12 @@
 import { reduce_font } from './utility.js';
 import { font_face } from './main.js';
 
-
 export const alert = {
+
     active: false,
     text: [],
     font_size: 18,
+    
     draw: function (ctx, text, font_size=this.font_size) {
 
         this.active = true;
