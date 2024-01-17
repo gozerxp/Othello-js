@@ -18,13 +18,18 @@ export const resize_display = (game, game_ctx, top_margin) => {
 
 export const draw_titlebar = (ctx) => {
 
-    let title = "Othello.js";
-    let font_size = 32;
+    const title = "Othello.js";
 
-    font_size = reduce_font(ctx, title, font_size, ctx.canvas.width / 2);
+    let font_size = 32;
+    const offset = 5;
+
+    font_size = reduce_font(ctx, title, font_size, ctx.canvas.width / 1.5);
 
     let y = (ctx.canvas.height / 2) + font_size / 2;
     let x = ctx.canvas.width / 2 - (ctx.measureText(title).width / 2);
+
+    ctx.fillStyle = "black";
+    ctx.fillText(title, x + offset, y + offset);
 
     ctx.fillStyle = "white";
     ctx.fillText(title, x, y);
@@ -33,11 +38,12 @@ export const draw_titlebar = (ctx) => {
 
 export const draw_scoreboard = (game) => {
 
-    let font_size = 20;
+    const font_size = 24;
     const ctx = score_ctx;
     const radius = 14;
     const margin = radius * 2;
-    
+    const offset = -3;
+
     ctx.font = `${font_size}px '${font_face}'`;
 
     let total_width = margin + ctx.measureText(`${game.p1_score}`).width;
@@ -52,11 +58,12 @@ export const draw_scoreboard = (game) => {
 
     draw_circle(ctx, x, y, radius, game.get_player_color(1));
 
-    ctx.fillStyle = "white";
-
     let text_x = x + margin;
     let text_y = y + font_size / 2;
 
+    ctx.fillStyle = "black";
+    ctx.fillText(`${game.p1_score}`, text_x + offset, text_y + offset);
+    ctx.fillStyle = "white";
     ctx.fillText(`${game.p1_score}`, text_x, text_y);
 
     x = text_x + ctx.measureText(`${game.p1_score}`).width + text_buffer;
@@ -65,6 +72,8 @@ export const draw_scoreboard = (game) => {
 
     text_x = x + margin;
 
+    ctx.fillStyle = "black";
+    ctx.fillText(`${game.p2_score}`, text_x + offset, text_y + offset);
     ctx.fillStyle = "white";
     ctx.fillText(`${game.p2_score}`, text_x, text_y);
 
